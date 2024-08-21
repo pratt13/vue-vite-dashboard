@@ -13,10 +13,51 @@
 }
 
 body {
-  @apply overflow-y-scroll overflow-x-hidden;
+  @apply overflow-y-scroll overflow-x-scroll;
 }
 
 html.dark #app {
   background: #121212;
   color: white;
+}
+
+#grid {
+  display: grid;
+  align-items: center;
+  margin: 5px;
+  width: fit-content;
+  padding: 10px;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.wide {
+  grid-column: span 3;
+}
+
+.medium {
+  grid-column: span 2;
+}
+
+.widget {
+  width: 50%;
+  height: 50%;
+  border-color: blue;
+  padding: 2px;
+  background-color: aliceblue;
+  align-content: center;
+}
+
+#header {
+  float: left;
+  justify-content: left;
+  margin: 0;
+  width: 100%;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 38px;
+  line-height: 25px;
+  color: black;
+  text-align: left;
+  text-decoration: none;
 }

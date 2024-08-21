@@ -82,7 +82,7 @@ export default [
 
       'no-use-before-define': 'off',
       'space-before-function-paren': 'off',
-
+      'vue/no-reserved-component-names': 'off',
       'vue/custom-event-name-casing': 'off',
       'vue/attributes-order': 'off',
       'vue/one-component-per-file': 'off',

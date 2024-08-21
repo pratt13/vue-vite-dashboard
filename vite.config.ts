@@ -6,6 +6,7 @@ import dotenv from 'dotenv' // Dotenv is a zero-dependency module that extracts 
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import vuetify from 'vite-plugin-vuetify'
 
 interface ENV {
   [K: string]: string
@@ -31,6 +32,12 @@ const getEnv = (mode: string) => {
 const baseConfig: UserConfigExport = {
   plugins: [
     vue(),
+    // Vuetify Loader
+    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin
+    vuetify({
+      autoImport: true,
+      // styles: { configFile: 'src/styles/settings.scss' },
+    }),
     vueJsx({
       /**
        * options are passed on to @vue/babel-plugin-jsx

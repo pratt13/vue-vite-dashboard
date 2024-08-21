@@ -1,11 +1,7 @@
 <template>
-  <HelloWorld :msg="'Vue3 ref proxy reactive data！' + environment" />
+  <v-container fluid fill-height>
+    <div class="text-h1 text-left">Diabetes App</div>
+  </v-container>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent } from 'vue'
-
-const HelloWorld = defineAsyncComponent(() => import('/@/components/HelloWorld.vue'))
-
-const environment = import.meta.env?.VITE_APP_NODE_ENV ?? 'undefined'
-</script>
+<script lang="ts" setup></script>
