@@ -31,7 +31,7 @@ ChartJS.register(
 )
 
 export default {
-  name: 'GLucoseLineChart',
+  name: 'GlucoseLineChart',
   components: { GlucoseLineChart },
   data: () => ({
     loaded: false,
