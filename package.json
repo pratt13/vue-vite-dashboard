@@ -2,12 +2,12 @@
   "name": "vite-vue-ts-starter",
   "version": "0.1.0",
   "type": "module",
-  "author": "zhixiangyao <blueskyzx@icloud.com> <https://github.com/zhixiangyao>",
+  "author": "Pete",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhixiangyao/vite-vue-ts-starter.git"
+    "url": "git+https://github.com/pratt13/vue-vite-dashboard"
   },
-  "homepage": "https://github.com/zhixiangyao/vite-vue-ts-starter",
+  "homepage": "https://github.com/pratt13/vue-vite-dashboard",
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc && vite build",

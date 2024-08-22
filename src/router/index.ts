@@ -16,9 +16,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('/@/views/Home.vue'),
       },
       {
-        path: 'FatherChild',
-        name: 'FatherChild',
-        component: () => import('/@/views/FatherChild.vue'),
+        path: 'tails2',
+        name: 'tails',
+        component: () => import('/@/views/Tailwind/index.vue'),
       },
       {
         path: 'Tailwind',
@@ -29,6 +29,11 @@ const routes: RouteRecordRaw[] = [
         path: 'Particle',
         name: 'Particle',
         component: () => import('/@/views/Particle.vue'),
+      },
+      {
+        path: 'Dashboard',
+        name: 'Dashboard',
+        component: () => import('/@/views/Dashboard.vue'),
       },
     ],
   },
