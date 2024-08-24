@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <GlucoseLineChart v-if="loaded" :data="chartData" :options />
+    <LineChart v-if="loaded" :data="chartData" :options />
   </div>
 </template>
 
 <script>
-import { Line as GlucoseLineChart } from 'vue-chartjs'
+import { Line as LineChart } from 'vue-chartjs'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,7 +32,7 @@ ChartJS.register(
 
 export default {
   name: 'GlucoseLineChart',
-  components: { GlucoseLineChart },
+  components: { LineChart },
   data: () => ({
     loaded: false,
     chartData: null,

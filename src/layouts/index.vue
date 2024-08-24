@@ -18,11 +18,6 @@ const navbarList = [
     name: 'Home',
   },
   {
-    id: 2,
-    label: 'FatherChild',
-    name: 'FatherChild',
-  },
-  {
     id: 3,
     label: 'Tailwind',
     name: 'Tailwind',
@@ -31,6 +26,12 @@ const navbarList = [
     id: 5,
     label: 'Particle',
     name: 'Particle',
+  },
+
+  {
+    id: 7,
+    label: 'Dashboard',
+    name: 'Dashboard',
   },
 ]
 
