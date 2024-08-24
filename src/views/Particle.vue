@@ -56,6 +56,7 @@ import 'chartjs-adapter-moment'
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 
+const defaultMaxY = 18
 export default {
   name: 'GlucoseDashboard',
   components: {
@@ -76,7 +77,7 @@ export default {
       scales: {
         y: {
           min: 0,
-          suggestedMax: 18,
+          suggestedMax: defaultMaxY,
         },
         x: {
           display: true,
@@ -107,6 +108,8 @@ export default {
         .then((response) => response.json())
         .then((glucoseData) => {
           console.log('Getting Glucose Data')
+          const maxValue = Math.max(...glucoseData.map((d) => d[1])) + 1
+          console.log(maxValue)
           const formattedChartData = {
             datasets: [
               {
@@ -118,15 +121,6 @@ export default {
                 pointRadius: 3,
                 data: glucoseData.map((d) => ({ x: d[2], y: d[1] })),
               },
-              //{
-              //  label: 'target',
-              //  radius: 0,
-              //  backgroundColor: 'rgb(221,255,221)',
-              //  tension: 0.1,
-              //  hoverOffset: 4,
-              //  data: glucoseData.map((d) => ({ x: d[2], y: 10 })),
-              //  fill: true,
-              //},
               {
                 label: 'low',
                 radius: 0,
@@ -136,10 +130,34 @@ export default {
                 data: glucoseData.map((d) => ({ x: d[2], y: 4 })),
                 fill: true,
               },
+              {
+                label: 'target',
+                radius: 0,
+                backgroundColor: 'rgb(221,255,221)',
+                tension: 0.1,
+                hoverOffset: 4,
+                data: glucoseData.map((d) => ({ x: d[2], y: 10 })),
+                fill: 1,
+              },
+              {
+                label: 'high',
+                radius: 0,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.1,
+                hoverOffset: 4,
+                data: glucoseData.map((d) => ({ x: d[2], y: maxValue })),
+                fill: 2,
+              },
             ],
             labels: glucoseData.map((d) => d[2]),
           }
           this.lineChartData = formattedChartData
+          const def = this.lineChartOptions
+          this.lineChartOptions = {
+            ...def,
+            scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
+          }
+
           this.barChartData = {
             labels: ['January', 'February', 'March'],
             datasets: [{ data: [40, 20, 12] }],
