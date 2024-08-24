@@ -29,6 +29,7 @@ ChartJS.register(
   LinearScale,
   Filler,
 )
+
 export default {
   name: 'LineChart',
   components: { Line },
@@ -39,7 +40,9 @@ export default {
     },
     chartOptions: {
       type: Object,
-      default: () => {},
+      default: () => {
+        backgroundColor: rgb(0, 0, 0)
+      },
     },
   },
 }
