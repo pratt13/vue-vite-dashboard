@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { Teleport, defineComponent, provide, readonly, ref } from 'vue'
+import { Teleport, defineComponent, provide, readonly } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
 import { useAppStore } from '/@/stores'
@@ -33,6 +33,11 @@ const navbarList = [
     label: 'Dashboard',
     name: 'Dashboard',
   },
+  {
+    id: 9,
+    label: 'Exercise',
+    name: 'Exercise',
+  },
 ]
 
 export default defineComponent({
@@ -41,7 +46,7 @@ export default defineComponent({
     const appStore = useAppStore()
     const router = useRouter()
     const routeName = useCurrentRouteName()
-    const defaultDataValue = ref('从 default 注入的')
+    const defaultDataValue = 'hi'
 
     provide(defaultDataKey, readonly(defaultDataValue))
 
@@ -72,7 +77,7 @@ export default defineComponent({
         </Main>
 
         <Teleport to="#global-components">
-          <Github class="xl:block" href="https://github.com/zhixiangyao/vite-vue-ts-starter" />
+          <Github class="xl:block" href="https://github.com/pratt13/glucose_app_frontend" />
         </Teleport>
       </>
     )

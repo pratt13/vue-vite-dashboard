@@ -4,14 +4,13 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
-// TODO: import GlucoseService from '/@/services/glucose.ts'
 import 'chartjs-adapter-moment'
-import moment from 'moment'
+
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 
 const defaultMaxY = 18
 export default {
-  name: 'GlucoseAverage',
+  name: 'GlucoseExerciseDashboard',
   components: {
     LineChart,
   },
@@ -21,7 +20,7 @@ export default {
       datasets: [],
     }
     this.lineChartOptions = {
-      //showLine: false,
+      showLine: false,
       scales: {
         y: {
           min: 0,
@@ -29,12 +28,12 @@ export default {
         },
         x: {
           display: true,
-          type: 'time',
-          //unit: "minute",
-          min: moment('00:00:01', 'hh:mm:ss'),
+          //ticks: {stepSize: 15},
+          stepSize: 1,
+          min: -60,
           title: {
             display: true,
-            text: 'Time',
+            text: 'Minutes since exercise',
           },
         },
       },
@@ -49,22 +48,14 @@ export default {
   },
   methods: {
     fetchDataFromAPI() {
-      fetch('http://localhost:5000/glucose/aggregate/15min', {
+      fetch('http://localhost:5000/strava-libre/summary', {
         method: 'GET',
       })
         .then((response) => response.json())
         .then((glucoseData) => {
-          console.log('Getting Seven Day Glucose Data')
-          console.log(glucoseData)
-          const {
-            mean: meanData,
-            median: medianData,
-            raw: rawData,
-            intervals,
-            std: stdData,
-          } = glucoseData
-          console.log(meanData)
-          const maxValue = Math.max(...rawData.flat(1)) + 1
+          console.log('Getting Strava and Libre Data')
+          const { mean: meanData, median: medianData, intervals, std: stdData } = glucoseData
+
           const formattedChartData = {
             datasets: [
               {
@@ -74,7 +65,7 @@ export default {
                 borderWidth: 1,
                 pointRadius: 3,
                 data: meanData.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
+                  x: intervals[index] / 60 - 60,
                   y: d - stdData[index],
                 })),
               },
@@ -85,7 +76,7 @@ export default {
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderWidth: 1,
                 pointRadius: 3,
-                data: meanData.map((d, index) => ({ x: moment(intervals[index], 'hh:mm'), y: d })),
+                data: meanData.map((d, index) => ({ x: intervals[index] / 60 - 60, y: d })),
               },
 
               {
@@ -95,7 +86,7 @@ export default {
                 borderWidth: 1,
                 pointRadius: 3,
                 data: meanData.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
+                  x: intervals[index] / 60 - 60,
                   y: d + stdData[index],
                 })),
               },
@@ -106,20 +97,12 @@ export default {
                 backgroundColor: '#08fb49',
                 borderWidth: 1,
                 pointRadius: 3,
-                data: medianData.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
-                  y: d,
-                })),
+                data: medianData.map((d, index) => ({ x: intervals[index] / 60 - 60, y: d })),
               },
             ],
-            labels: intervals.map((d) => moment(d, 'hh:mm')),
+            labels: intervals.map((d) => Math.round(d / 60) - 60),
           }
           this.lineChartData = formattedChartData
-          const def = this.lineChartOptions
-          this.lineChartOptions = {
-            ...def,
-            scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
-          }
         })
         .catch((e) => {
           console.log('*******Error**********')

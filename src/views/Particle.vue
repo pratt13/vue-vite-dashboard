@@ -1,5 +1,6 @@
 <template>
   <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
+  <BarChart :chartData="barChartData" :chartOptions="barChartOptions" />
   <div>
     <div class="row">
       <div class="col-12">
@@ -64,6 +65,10 @@ export default {
     BarChart,
   },
   data() {
+    this.avChartData = {
+      labels: [],
+      datasets: [],
+    }
     this.lineChartData = {
       labels: [],
       datasets: [],
@@ -91,6 +96,7 @@ export default {
     }
     this.barChartOptions = {}
     return {
+      avChartData: this.avChartData,
       lineChartData: this.lineChartData,
       barChartData: this.barChartData,
       lineChartOptions: this.lineChartOptions,
@@ -157,10 +163,27 @@ export default {
             ...def,
             scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
           }
+        })
+        .catch((e) => {
+          console.log('*******Error**********')
+          console.log(e)
+        })
 
+      // Bar CHart data
+      fetch('http://localhost:5000/strava/summary', {
+        method: 'GET',
+      })
+        .then((response) => response.json())
+        .then((stravaData) => {
+          console.log('Getting Strava Data')
           this.barChartData = {
-            labels: ['January', 'February', 'March'],
-            datasets: [{ data: [40, 20, 12] }],
+            labels: stravaData.activity,
+            datasets: [
+              {
+                label: 'Activity Count',
+                data: stravaData.number_activities,
+              },
+            ],
           }
         })
         .catch((e) => {
