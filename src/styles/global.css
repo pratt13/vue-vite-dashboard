@@ -20,3 +20,15 @@ html.dark #app {
   background: #121212;
   color: white;
 }
+
+#grid {
+  display: grid;
+  margin: 0;
+  padding: 75px;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 500px 500px 500px;
+}
+
+.wide {
+  grid-column: span 3;
+}

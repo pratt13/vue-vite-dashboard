@@ -40,6 +40,11 @@ const routes: RouteRecordRaw[] = [
         name: 'Exercise',
         component: () => import('/@/views/Exercise.vue'),
       },
+      {
+        path: 'Strava',
+        name: 'Strava',
+        component: () => import('/@/views/Strava.vue'),
+      },
     ],
   },
 ]

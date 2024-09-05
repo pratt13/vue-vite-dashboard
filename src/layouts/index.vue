@@ -38,6 +38,11 @@ const navbarList = [
     label: 'Exercise',
     name: 'Exercise',
   },
+  {
+    id: 11,
+    label: 'Strava',
+    name: 'Strava',
+  },
 ]
 
 export default defineComponent({

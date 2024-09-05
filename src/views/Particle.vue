@@ -1,51 +1,31 @@
 <template>
-  <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
-  <BarChart :chartData="barChartData" :chartOptions="barChartOptions" />
-  <div>
-    <div class="row">
-      <div class="col-12">
-        <chart width="1000" height="300" id="chart1">
-          <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
-        </chart>
-      </div>
+  <div id="grid">
+    <div class="wide">
+      <LineChart
+        :chartData="lineChartData"
+        :chartOptions="lineChartOptions"
+        :width="50"
+        :height="10"
+      />
     </div>
-  </div>
-  <div class="pageWidth">
-    <chart width="1000" height="300" id="chart1">
-      <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
-    </chart>
-  </div>
-  <div class="py-4 container-fluid">
-    <div class="col-lg-12 position-relative z-index-2">
-      <div class="row mb-4">
-        <div class="row">
-          <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4">
-            <BarChart :chartData="barChartData" :chartOptions="barChartOptions" />
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4"> mini-statistics-card 4 </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col-lg-4 col-md-6 mt-4"> chart-holder-card </div>
-          <div class="col-lg-4 col-md-6 mt-4"> chart-holder-card </div>
-          <div class="col-lg-4 mt-4"> chart-holder-card </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-lg-8 col-md-6 mb-md-0 mb-4"> HERE </div>
-      <div class="col-lg-4 col-md-6"> Time line list </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-4">
-      <div class="card card-chart">
-        <div class="card-header">
-          <h5 class="card-category">Total Shipments</h5>
-          <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> 763,215</h3>
-        </div>
-      </div>
-    </div>
+    <BarChart
+      :chartData="barChartData"
+      :chartOptions="barChartOptions"
+      :width="450"
+      :height="200"
+    />
+    <BarChart
+      :chartData="barChartData"
+      :chartOptions="barChartOptions"
+      :width="450"
+      :height="200"
+    />
+    <BarChart
+      :chartData="barChartData"
+      :chartOptions="barChartOptions"
+      :width="450"
+      :height="200"
+    />
   </div>
 </template>
 
@@ -94,7 +74,7 @@ export default {
         },
       },
     }
-    this.barChartOptions = {}
+    this.barChartOptions = { responsive: false } //responsive:false, maintainAspectRatio:false}
     return {
       avChartData: this.avChartData,
       lineChartData: this.lineChartData,
