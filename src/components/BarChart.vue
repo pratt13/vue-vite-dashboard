@@ -11,10 +11,11 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  Colors,
 } from 'chart.js'
 import { Bar } from 'vue-chartjs'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, Colors)
 
 export default {
   name: 'BarChart',

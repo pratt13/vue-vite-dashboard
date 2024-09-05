@@ -11,13 +11,13 @@
     <BarChart
       :chartData="barChartData"
       :chartOptions="barChartOptions"
-      :width="450"
+      :width="400"
       :height="200"
     />
     <BarChart
-      :chartData="barChartData"
+      :chartData="distanceBarChartData"
       :chartOptions="barChartOptions"
-      :width="450"
+      :width="400"
       :height="200"
     />
     <VueDatePicker :model-value="date" @update:model-value="handleDate" range />
@@ -31,6 +31,24 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import moment from 'moment'
 
+const BACKGROUND_COLOURS = [
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(153, 102, 255, 0.2)',
+  'rgba(201, 203, 207, 0.2)',
+]
+const BORDER_COLOURS = [
+  'rgb(255, 99, 132)',
+  'rgb(255, 159, 64)',
+  'rgb(255, 205, 86)',
+  'rgb(75, 192, 192)',
+  'rgb(54, 162, 235)',
+  'rgb(153, 102, 255)',
+  'rgb(201, 203, 207)',
+]
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
@@ -41,13 +59,6 @@ export default {
     LineChart,
     VueDatePicker,
   },
-  //setup() {
-  //  const startDate = ref();
-  //  const endDate = ref();
-  //  return {
-  //    startDate,
-  //    endDate
-  //  }},
   data() {
     this.lineChartData = {
       labels: [],
@@ -58,13 +69,18 @@ export default {
       labels: [],
       datasets: [],
     }
-    this.barChartOptions = {}
+    this.distanceBarChartData = {
+      labels: [],
+      datasets: [],
+    }
+    this.barChartOptions = { responsive: false }
     const nowDate = moment().format(DATE_FORMAT)
     const firstOfMonth = moment().startOf('month').format(DATE_FORMAT)
     return {
       lineChartData: this.lineChartData,
       lineChartOptions: this.lineChartOptions,
       barChartData: this.barChartData,
+      distanceBarChartData: this.distanceBarChartData,
       barChartOptions: this.barChartOptions,
       date: [firstOfMonth, nowDate],
     }
@@ -82,18 +98,16 @@ export default {
       })
         .then((response) => response.json())
         .then((stravaData) => {
-          console.log('Getting Strava Data')
           // Get the different activity types
           const activity_types = Object.keys(stravaData.meta_data)
-          console.log(activity_types)
           // For each activity type create the data
           this.lineChartData = {
             labels: stravaData.timestamped_data.map((d) => d[0]),
-            datasets: activity_types.map((a_type) => ({
+            datasets: activity_types.map((a_type, idx) => ({
               label: a_type,
               fill: false,
-              borderColor: 'rgb(251, 8, 162)',
-              backgroundColor: 'rgb(251, 8, 162)',
+              borderColor: BORDER_COLOURS[idx],
+              backgroundColor: BACKGROUND_COLOURS[idx],
               borderWidth: 1,
               pointRadius: 3,
               data: stravaData.timestamped_data
@@ -102,11 +116,26 @@ export default {
             })),
           }
           this.barChartData = {
-            labels: stravaData.activity,
+            labels: activity_types,
             datasets: [
               {
                 label: 'Activity Count',
-                data: stravaData.number_activities,
+                data: activity_types.map((t) => stravaData.meta_data[t].number_activities),
+                backgroundColor: BACKGROUND_COLOURS,
+                borderColor: BORDER_COLOURS,
+                borderWidth: 1,
+              },
+            ],
+          }
+          this.distanceBarChartData = {
+            labels: activity_types,
+            datasets: [
+              {
+                label: 'Activity Distance',
+                data: activity_types.map((t) => stravaData.meta_data[t].distance),
+                backgroundColor: BACKGROUND_COLOURS,
+                borderColor: BORDER_COLOURS,
+                borderWidth: 1,
               },
             ],
           }
