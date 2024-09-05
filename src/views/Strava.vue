@@ -21,7 +21,14 @@
       :width="400"
       :height="200"
     />
-    <VueDatePicker :model-value="date" @update:model-value="handleDate" range />
+    <div class="widget">
+      <VueDatePicker
+        @update:model-value="handleDate"
+        model-value="month"
+        month-picker
+        name="monthPicker"
+      />
+    </div>
   </div>
 </template>
 
@@ -137,8 +144,6 @@ export default {
         },
       },
     }
-    const nowDate = moment().format(DATE_FORMAT)
-    const firstOfMonth = moment().startOf('month').format(DATE_FORMAT)
     return {
       lineChartData: this.lineChartData,
       lineChartOptions: this.lineChartOptions,
@@ -146,7 +151,7 @@ export default {
       distanceBarChartData: this.distanceBarChartData,
       distanceBarChartOptions: this.distanceBarChartOptions,
       countBarChartOptions: this.countBarChartOptions,
-      date: [firstOfMonth, nowDate],
+      month: moment().startOf('month').format(DATE_FORMAT),
     }
   },
   mounted() {
@@ -155,7 +160,8 @@ export default {
   methods: {
     fetchDataFromAPI() {
       // This is dirty
-      const url = `http://localhost:5000/strava/summary?start=${this.date[0]}&end=${this.date[1]}`
+      const endDate = moment(this.month).endOf('month').format(DATE_FORMAT)
+      const url = `http://localhost:5000/strava/summary?start=${this.month}&end=${endDate}`
       // Strava data
       fetch(url, {
         method: 'GET',
@@ -210,11 +216,8 @@ export default {
         })
     },
     handleDate(modelData) {
-      // Date picker event
-      this.date = [
-        moment(modelData[0]).format(DATE_FORMAT),
-        moment(modelData[1]).format(DATE_FORMAT),
-      ]
+      // Month picker event
+      this.month = moment(modelData).format(DATE_FORMAT)
       // Re-fetch the data
       this.fetchDataFromAPI()
     },

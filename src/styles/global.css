@@ -23,15 +23,24 @@ html.dark #app {
 
 #grid {
   display: grid;
+  align-items: center;
   margin: 5px;
   width: fit-content;
   padding: 10px;
   grid-template-rows: 1fr 1fr;
-  grid-template-columns: 1.25fr 1.25fr 1fr;
+  grid-template-columns: 1.5fr 1.5fr 0.5fr;
 }
 
 .wide {
   grid-column: span 3;
+}
+
+.widget {
+  height: 50%;
+  border-color: blue;
+  padding: 2px;
+  background-color: aliceblue;
+  align-content: center;
 }
 
 #header {
