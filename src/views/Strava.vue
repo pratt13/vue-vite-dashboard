@@ -1,4 +1,5 @@
 <template>
+  <div id="header">Summary of Strava Activities</div>
   <div id="grid">
     <div class="wide">
       <LineChart
@@ -9,14 +10,14 @@
       />
     </div>
     <BarChart
-      :chartData="barChartData"
-      :chartOptions="barChartOptions"
+      :chartData="countBarChartData"
+      :chartOptions="countBarChartOptions"
       :width="400"
       :height="200"
     />
     <BarChart
       :chartData="distanceBarChartData"
-      :chartOptions="barChartOptions"
+      :chartOptions="distanceBarChartOptions"
       :width="400"
       :height="200"
     />
@@ -64,8 +65,35 @@ export default {
       labels: [],
       datasets: [],
     }
-    this.lineChartOptions = {}
-    this.barChartData = {
+    this.lineChartOptions = {
+      showLine: true,
+      scales: {
+        y: {
+          min: 0,
+          title: {
+            display: true,
+            text: 'Distance',
+          },
+          ticks: {
+            callback: function (value, _index, _values) {
+              return Number((value / 1000).toString()) + 'K' //pass tick values as a string into Number function
+            },
+          },
+        },
+        x: {
+          display: true,
+          type: 'time',
+          time: {
+            unit: 'day',
+          },
+          title: {
+            display: true,
+            text: 'Date',
+          },
+        },
+      },
+    }
+    this.countBarChartData = {
       labels: [],
       datasets: [],
     }
@@ -73,15 +101,51 @@ export default {
       labels: [],
       datasets: [],
     }
-    this.barChartOptions = { responsive: false }
+    this.countBarChartOptions = {
+      responsive: false,
+      scales: {
+        y: {
+          min: 0,
+          title: {
+            display: true,
+            text: 'Count',
+          },
+          ticks: {
+            callback: function (value) {
+              if (value % 1 === 0) {
+                return value
+              }
+            },
+          },
+        },
+      },
+    }
+    this.distanceBarChartOptions = {
+      responsive: false,
+      scales: {
+        y: {
+          min: 0,
+          title: {
+            display: true,
+            text: 'Distance',
+          },
+          ticks: {
+            callback: function (value, _index, _values) {
+              return Number((value / 1000).toString()) + 'K' //pass tick values as a string into Number function
+            },
+          },
+        },
+      },
+    }
     const nowDate = moment().format(DATE_FORMAT)
     const firstOfMonth = moment().startOf('month').format(DATE_FORMAT)
     return {
       lineChartData: this.lineChartData,
       lineChartOptions: this.lineChartOptions,
-      barChartData: this.barChartData,
+      countBarChartData: this.countBarChartData,
       distanceBarChartData: this.distanceBarChartData,
-      barChartOptions: this.barChartOptions,
+      distanceBarChartOptions: this.distanceBarChartOptions,
+      countBarChartOptions: this.countBarChartOptions,
       date: [firstOfMonth, nowDate],
     }
   },
@@ -115,7 +179,7 @@ export default {
                 .map((d) => ({ x: d[0], y: d[2] })),
             })),
           }
-          this.barChartData = {
+          this.countBarChartData = {
             labels: activity_types,
             datasets: [
               {

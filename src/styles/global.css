@@ -13,7 +13,7 @@
 }
 
 body {
-  @apply overflow-y-scroll overflow-x-hidden;
+  @apply overflow-y-scroll overflow-x-scroll;
 }
 
 html.dark #app {
@@ -23,12 +23,27 @@ html.dark #app {
 
 #grid {
   display: grid;
-  margin: 0;
-  padding: 75px;
+  margin: 5px;
+  width: fit-content;
+  padding: 10px;
   grid-template-rows: 1fr 1fr;
-  grid-template-columns: 500px 500px 500px;
+  grid-template-columns: 1.25fr 1.25fr 1fr;
 }
 
 .wide {
   grid-column: span 3;
+}
+
+#header {
+  float: left;
+  justify-content: left;
+  margin: 0;
+  width: 100%;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 38px;
+  line-height: 25px;
+  color: black;
+  text-align: left;
+  text-decoration: none;
 }
