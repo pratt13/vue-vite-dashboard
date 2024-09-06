@@ -1,41 +1,52 @@
 <template>
+  <div id="header">Glucose Levels</div>
   <div id="grid">
     <div class="wide">
       <LineChart
         :chartData="lineChartData"
         :chartOptions="lineChartOptions"
-        :width="50"
-        :height="10"
+        :width="500"
+        :height="200"
       />
     </div>
-    <BarChart
-      :chartData="barChartData"
-      :chartOptions="barChartOptions"
-      :width="450"
-      :height="200"
-    />
-    <BarChart
-      :chartData="barChartData"
-      :chartOptions="barChartOptions"
-      :width="450"
-      :height="200"
-    />
-    <BarChart
-      :chartData="barChartData"
-      :chartOptions="barChartOptions"
-      :width="450"
-      :height="200"
-    />
+    <div>
+      <VueDatePicker
+        @update:model-value="handleWeek"
+        model-value="week"
+        week-picker
+        name="weekPicker"
+        :week-numbers="{ type: 'iso' }"
+      />
+    </div>
+    <div class="medium">
+      <BarChart
+        :chartData="barChartData"
+        :chartOptions="barChartOptions"
+        :width="400"
+        :height="200"
+      />
+    </div>
+    <div class="medium">
+      <BarChart
+        :chartData="barChartData"
+        :chartOptions="barChartOptions"
+        :width="400"
+        :height="200"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import { defineAsyncComponent } from 'vue'
-// TODO: import GlucoseService from '/@/services/glucose.ts'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 import 'chartjs-adapter-moment'
+import moment from 'moment'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
+const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 const defaultMaxY = 18
 export default {
@@ -43,6 +54,7 @@ export default {
   components: {
     LineChart,
     BarChart,
+    VueDatePicker,
   },
   data() {
     this.avChartData = {
@@ -81,6 +93,10 @@ export default {
       barChartData: this.barChartData,
       lineChartOptions: this.lineChartOptions,
       barChartOptions: this.barChartOptions,
+      week: [
+        moment().startOf('week').format(DATE_FORMAT),
+        moment().endOf('week').format(DATE_FORMAT),
+      ],
     }
   },
   mounted() {
@@ -88,7 +104,7 @@ export default {
   },
   methods: {
     fetchDataFromAPI() {
-      fetch('http://localhost:5000/glucose', {
+      fetch(`http://localhost:5000/glucose?start=${this.week[0]}&end=${this.week[1]}`, {
         method: 'GET',
       })
         .then((response) => response.json())
@@ -170,6 +186,13 @@ export default {
           console.log('*******Error**********')
           console.log(e)
         })
+    },
+    handleWeek(modelData) {
+      // Month picker event
+      console.log(modelData)
+      this.week = modelData.map((d) => moment(d).format(DATE_FORMAT))
+      // Re-fetch the data
+      this.fetchDataFromAPI()
     },
   },
 }

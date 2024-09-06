@@ -28,14 +28,19 @@ html.dark #app {
   width: fit-content;
   padding: 10px;
   grid-template-rows: 1fr 1fr;
-  grid-template-columns: 1.5fr 1.5fr 0.5fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 .wide {
   grid-column: span 3;
 }
 
+.medium {
+  grid-column: span 2;
+}
+
 .widget {
+  width: 50%;
   height: 50%;
   border-color: blue;
   padding: 2px;

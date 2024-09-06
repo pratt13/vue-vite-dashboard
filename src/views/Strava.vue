@@ -5,28 +5,33 @@
       <LineChart
         :chartData="lineChartData"
         :chartOptions="lineChartOptions"
-        :width="50"
-        :height="10"
+        :width="500"
+        :height="200"
       />
     </div>
-    <BarChart
-      :chartData="countBarChartData"
-      :chartOptions="countBarChartOptions"
-      :width="400"
-      :height="200"
-    />
-    <BarChart
-      :chartData="distanceBarChartData"
-      :chartOptions="distanceBarChartOptions"
-      :width="400"
-      :height="200"
-    />
     <div class="widget">
       <VueDatePicker
         @update:model-value="handleDate"
         model-value="month"
         month-picker
         name="monthPicker"
+      />
+    </div>
+
+    <div class="medium">
+      <BarChart
+        :chartData="countBarChartData"
+        :chartOptions="countBarChartOptions"
+        :width="400"
+        :height="200"
+      />
+    </div>
+    <div class="medium">
+      <BarChart
+        :chartData="distanceBarChartData"
+        :chartOptions="distanceBarChartOptions"
+        :width="400"
+        :height="200"
       />
     </div>
   </div>
