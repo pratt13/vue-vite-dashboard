@@ -16,3 +16,6 @@ export const debounce = <T extends any[]>(
     if (callNow) func(...args)
   }
 }
+
+export const replaceUnderscore = (name: string) => name.replaceAll('_', ' ')
+export const capitaliseString = (name: string) => name.charAt(0).toUpperCase() + name.slice(1)

@@ -16,6 +16,7 @@
         range
         name="weekPicker"
         :enable-time-picker="false"
+        :format="formatDateRange"
       />
     </div>
     <div class="medium">
@@ -27,9 +28,9 @@
       />
     </div>
     <div class="medium">
-      <BarChart
-        :chartData="percentBarChartData"
-        :chartOptions="percentBarChartOptions"
+      <DoughnutChart
+        :chartData="percentDoughnutChartData"
+        :chartOptions="percentDoughnutChartOptions"
         :width="400"
         :height="200"
       />
@@ -45,14 +46,20 @@ import 'chartjs-adapter-moment'
 import moment from 'moment'
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
-const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+const DoughnutChart = defineAsyncComponent(() => import('/@/components/DoughnutChart.vue'))
 
+import { replaceUnderscore, capitaliseString } from '/@/utils'
+
+const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+const DATE_FORMAT = 'DD/MM/YYYY'
 const defaultMaxY = 18
+
 export default {
   name: 'GlucoseDashboard',
   components: {
     LineChart,
     BarChart,
+    DoughnutChart,
     VueDatePicker,
   },
   data() {
@@ -68,7 +75,7 @@ export default {
       labels: [],
       datasets: [],
     }
-    this.percentBarChartData = {
+    this.percentDoughnutChartData = {
       labels: [],
       datasets: [],
     }
@@ -104,19 +111,19 @@ export default {
         },
       },
     }
-    this.percentBarChartOptions = {
+    this.percentDoughnutChartOptions = {
       responsive: false,
-      scales: {
-        y: {
-          ticks: {
-            stepSize: 1,
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            return Math.round(value, 2) + '%'
           },
         },
       },
     }
     this.date = [
-      moment().startOf('day').format(DATE_FORMAT),
-      moment().endOf('day').format(DATE_FORMAT),
+      moment().startOf('day').format(DATETIME_FORMAT),
+      moment().endOf('day').format(DATETIME_FORMAT),
     ]
     return {
       avChartData: this.avChartData,
@@ -131,11 +138,14 @@ export default {
     this.fetchDataFromAPI()
   },
   methods: {
+    formatDateRange(dateRange) {
+      return dateRange.map((d) => moment(d).format(DATE_FORMAT))
+    },
     handleRange(modelData) {
       // Range picker event
       this.date = [
-        moment(modelData[0]).startOf('day').format(DATE_FORMAT),
-        moment(modelData[0]).endOf('day').format(DATE_FORMAT),
+        moment(modelData[0]).startOf('day').format(DATETIME_FORMAT),
+        moment(modelData[1]).endOf('day').format(DATETIME_FORMAT),
       ]
       // Re-fetch the data
       this.fetchDataFromAPI()
@@ -197,13 +207,11 @@ export default {
           }
           const count_values = ['number_lows', 'number_highs']
           this.countBarChartData = {
-            labels: count_values,
+            labels: count_values.map((l) => replaceUnderscore(capitaliseString(l))),
             datasets: [
               {
                 label: 'Glucose Counts',
                 data: count_values.map((v) => glucoseData.meta_data[v]),
-                //[glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
-                //data: [glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
               },
             ],
           }
@@ -213,14 +221,12 @@ export default {
             'percentage_of_time_low',
             'percentage_of_time_in_target',
           ]
-          this.percentBarChartData = {
-            labels: percent_values,
+          this.percentDoughnutChartData = {
+            labels: percent_values.map((l) => replaceUnderscore(capitaliseString(l))),
             datasets: [
               {
                 label: 'Percentage',
                 data: percent_values.map((v) => glucoseData.meta_data[v]),
-                //[glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
-                //data: [glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
               },
             ],
           }
