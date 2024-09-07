@@ -1,5 +1,5 @@
 <template>
-  <div id="header">Glucose Levels</div>
+  <div id="header">Summary of Glucose Activities</div>
   <div id="grid">
     <div class="wide">
       <LineChart
@@ -11,25 +11,25 @@
     </div>
     <div>
       <VueDatePicker
-        @update:model-value="handleWeek"
-        model-value="week"
-        week-picker
+        @update:model-value="handleRange"
+        v-model="date"
+        range
         name="weekPicker"
-        :week-numbers="{ type: 'iso' }"
+        :enable-time-picker="false"
       />
     </div>
     <div class="medium">
       <BarChart
-        :chartData="barChartData"
-        :chartOptions="barChartOptions"
+        :chartData="countBarChartData"
+        :chartOptions="countBarChartOptions"
         :width="400"
         :height="200"
       />
     </div>
     <div class="medium">
       <BarChart
-        :chartData="barChartData"
-        :chartOptions="barChartOptions"
+        :chartData="percentBarChartData"
+        :chartOptions="percentBarChartOptions"
         :width="400"
         :height="200"
       />
@@ -43,7 +43,6 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
-
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
@@ -65,7 +64,11 @@ export default {
       labels: [],
       datasets: [],
     }
-    this.barChartData = {
+    this.countBarChartData = {
+      labels: [],
+      datasets: [],
+    }
+    this.percentBarChartData = {
       labels: [],
       datasets: [],
     }
@@ -75,10 +78,15 @@ export default {
         y: {
           min: 0,
           suggestedMax: defaultMaxY,
+          stepSize: 1,
         },
         x: {
           display: true,
           type: 'time',
+          ticks: {
+            // forces step size to be 50 units
+            stepSize: 2,
+          },
           title: {
             display: true,
             text: 'Date',
@@ -86,32 +94,60 @@ export default {
         },
       },
     }
-    this.barChartOptions = { responsive: false } //responsive:false, maintainAspectRatio:false}
+    this.countBarChartOptions = {
+      responsive: false,
+      scales: {
+        y: {
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+    }
+    this.percentBarChartOptions = {
+      responsive: false,
+      scales: {
+        y: {
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+    }
+    this.date = [
+      moment().startOf('day').format(DATE_FORMAT),
+      moment().endOf('day').format(DATE_FORMAT),
+    ]
     return {
       avChartData: this.avChartData,
       lineChartData: this.lineChartData,
-      barChartData: this.barChartData,
+      countBarChartData: this.countBarChartData,
       lineChartOptions: this.lineChartOptions,
-      barChartOptions: this.barChartOptions,
-      week: [
-        moment().startOf('week').format(DATE_FORMAT),
-        moment().endOf('week').format(DATE_FORMAT),
-      ],
+      countBarChartOptions: this.countBarChartOptions,
+      date: this.date,
     }
   },
   mounted() {
     this.fetchDataFromAPI()
   },
   methods: {
+    handleRange(modelData) {
+      // Range picker event
+      this.date = [
+        moment(modelData[0]).startOf('day').format(DATE_FORMAT),
+        moment(modelData[0]).endOf('day').format(DATE_FORMAT),
+      ]
+      // Re-fetch the data
+      this.fetchDataFromAPI()
+    },
     fetchDataFromAPI() {
-      fetch(`http://localhost:5000/glucose?start=${this.week[0]}&end=${this.week[1]}`, {
+      fetch(`http://localhost:5000/glucose/meta?start=${this.date[0]}&end=${this.date[1]}`, {
         method: 'GET',
       })
         .then((response) => response.json())
         .then((glucoseData) => {
           console.log('Getting Glucose Data')
-          const maxValue = Math.max(...glucoseData.map((d) => d[1])) + 1
-          console.log(maxValue)
+          const maxValue = Math.round(Math.max(...glucoseData.raw_data.map((d) => d[0]))) + 1
           const formattedChartData = {
             datasets: [
               {
@@ -121,7 +157,7 @@ export default {
                 backgroundColor: 'rgb(251, 8, 162)',
                 borderWidth: 1,
                 pointRadius: 3,
-                data: glucoseData.map((d) => ({ x: d[2], y: d[1] })),
+                data: glucoseData.raw_data.map((d) => ({ x: d[1], y: d[0] })),
               },
               {
                 label: 'low',
@@ -129,7 +165,7 @@ export default {
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 tension: 0.1,
                 hoverOffset: 4,
-                data: glucoseData.map((d) => ({ x: d[2], y: 4 })),
+                data: glucoseData.raw_data.map((d) => ({ x: d[1], y: 4 })),
                 fill: true,
               },
               {
@@ -138,7 +174,7 @@ export default {
                 backgroundColor: 'rgb(221,255,221)',
                 tension: 0.1,
                 hoverOffset: 4,
-                data: glucoseData.map((d) => ({ x: d[2], y: 10 })),
+                data: glucoseData.raw_data.map((d) => ({ x: d[1], y: 10 })),
                 fill: 1,
               },
               {
@@ -147,11 +183,11 @@ export default {
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 tension: 0.1,
                 hoverOffset: 4,
-                data: glucoseData.map((d) => ({ x: d[2], y: maxValue })),
+                data: glucoseData.raw_data.map((d) => ({ x: d[1], y: maxValue })),
                 fill: 2,
               },
             ],
-            labels: glucoseData.map((d) => d[2]),
+            labels: glucoseData.raw_data.map((d) => d[1]),
           }
           this.lineChartData = formattedChartData
           const def = this.lineChartOptions
@@ -159,25 +195,32 @@ export default {
             ...def,
             scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
           }
-        })
-        .catch((e) => {
-          console.log('*******Error**********')
-          console.log(e)
-        })
-
-      // Bar CHart data
-      fetch('http://localhost:5000/strava/summary', {
-        method: 'GET',
-      })
-        .then((response) => response.json())
-        .then((stravaData) => {
-          console.log('Getting Strava Data')
-          this.barChartData = {
-            labels: stravaData.activity,
+          const count_values = ['number_lows', 'number_highs']
+          this.countBarChartData = {
+            labels: count_values,
             datasets: [
               {
-                label: 'Activity Count',
-                data: stravaData.number_activities,
+                label: 'Glucose Counts',
+                data: count_values.map((v) => glucoseData.meta_data[v]),
+                //[glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
+                //data: [glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
+              },
+            ],
+          }
+
+          const percent_values = [
+            'percentage_of_time_high',
+            'percentage_of_time_low',
+            'percentage_of_time_in_target',
+          ]
+          this.percentBarChartData = {
+            labels: percent_values,
+            datasets: [
+              {
+                label: 'Percentage',
+                data: percent_values.map((v) => glucoseData.meta_data[v]),
+                //[glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
+                //data: [glucoseData.meta_data.number_lows,glucoseData.meta_data.number_highs ],
               },
             ],
           }
@@ -186,13 +229,6 @@ export default {
           console.log('*******Error**********')
           console.log(e)
         })
-    },
-    handleWeek(modelData) {
-      // Month picker event
-      console.log(modelData)
-      this.week = modelData.map((d) => moment(d).format(DATE_FORMAT))
-      // Re-fetch the data
-      this.fetchDataFromAPI()
     },
   },
 }
