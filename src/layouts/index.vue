@@ -24,8 +24,8 @@ const navbarList = [
   },
   {
     id: 5,
-    label: 'Particle',
-    name: 'Particle',
+    label: 'Glucose',
+    name: 'Glucose',
   },
 
   {

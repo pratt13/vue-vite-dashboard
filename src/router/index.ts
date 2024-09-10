@@ -26,9 +26,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('/@/views/Tailwind/index.vue'),
       },
       {
-        path: 'Particle',
-        name: 'Particle',
-        component: () => import('/@/views/Particle.vue'),
+        path: 'Glucose',
+        name: 'Glucose',
+        component: () => import('/@/views/Glucose.vue'),
       },
       {
         path: 'Dashboard',

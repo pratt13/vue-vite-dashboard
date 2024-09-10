@@ -34,6 +34,7 @@
         :width="400"
         :height="200"
       />
+      <Hba :msg="hbaValue" />
     </div>
   </div>
 </template>
@@ -47,13 +48,13 @@ import moment from 'moment'
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 const DoughnutChart = defineAsyncComponent(() => import('/@/components/DoughnutChart.vue'))
+const Hba = defineAsyncComponent(() => import('/@/components/Hba1c.vue'))
 
 import { replaceUnderscore, capitaliseString } from '/@/utils'
 
 const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 const DATE_FORMAT = 'DD/MM/YYYY'
 const defaultMaxY = 18
-
 export default {
   name: 'GlucoseDashboard',
   components: {
@@ -61,6 +62,7 @@ export default {
     BarChart,
     DoughnutChart,
     VueDatePicker,
+    Hba,
   },
   data() {
     this.avChartData = {
@@ -125,6 +127,7 @@ export default {
       moment().startOf('day').format(DATETIME_FORMAT),
       moment().endOf('day').format(DATETIME_FORMAT),
     ]
+    this.hbaValue = 0
     return {
       avChartData: this.avChartData,
       lineChartData: this.lineChartData,
@@ -132,6 +135,7 @@ export default {
       lineChartOptions: this.lineChartOptions,
       countBarChartOptions: this.countBarChartOptions,
       date: this.date,
+      hbaValue: this.hbaValue,
     }
   },
   mounted() {
@@ -139,7 +143,10 @@ export default {
   },
   methods: {
     formatDateRange(dateRange) {
-      return dateRange.map((d) => moment(d).format(DATE_FORMAT))
+      // TODO: Move to a util
+      return Object.values(dateRange)
+        .map((d) => moment(d).format(DATE_FORMAT))
+        .join(',')
     },
     handleRange(modelData) {
       // Range picker event
@@ -157,6 +164,8 @@ export default {
         .then((response) => response.json())
         .then((glucoseData) => {
           console.log('Getting Glucose Data')
+          // HBa1c - JS rounding madness
+          this.hbaValue = Math.round((glucoseData.meta_data.mean + Number.EPSILON) * 100) / 100
           const maxValue = Math.round(Math.max(...glucoseData.raw_data.map((d) => d[0]))) + 1
           const formattedChartData = {
             datasets: [
