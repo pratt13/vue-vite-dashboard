@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPhone, faUser, faFlag, faChartLine } from '@fortawesome/free-solid-svg-icons'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faPhone, faUser, faFlag, faChartLine)
+library.add(fas, far)
 
 export default FontAwesomeIcon

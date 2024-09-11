@@ -34,7 +34,7 @@
         :width="400"
         :height="200"
       />
-      <Hba :msg="hbaValue" />
+      <StatsCard :stats="statsData" />
     </div>
   </div>
 </template>
@@ -48,7 +48,7 @@ import moment from 'moment'
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 const DoughnutChart = defineAsyncComponent(() => import('/@/components/DoughnutChart.vue'))
-const Hba = defineAsyncComponent(() => import('/@/components/Hba1c.vue'))
+const StatsCard = defineAsyncComponent(() => import('/@/components/StatsCard.vue'))
 
 import { replaceUnderscore, capitaliseString } from '/@/utils'
 
@@ -62,7 +62,7 @@ export default {
     BarChart,
     DoughnutChart,
     VueDatePicker,
-    Hba,
+    StatsCard,
   },
   data() {
     this.avChartData = {
@@ -128,6 +128,7 @@ export default {
       moment().endOf('day').format(DATETIME_FORMAT),
     ]
     this.hbaValue = 0
+    this.statsData = []
     return {
       avChartData: this.avChartData,
       lineChartData: this.lineChartData,
@@ -136,6 +137,7 @@ export default {
       countBarChartOptions: this.countBarChartOptions,
       date: this.date,
       hbaValue: this.hbaValue,
+      statsData: this.statsData,
     }
   },
   mounted() {
@@ -239,6 +241,13 @@ export default {
               },
             ],
           }
+          this.statsData = [
+            {
+              metric: 'HbA1c',
+              icon: 'fas fa-droplet',
+              value: Math.round((glucoseData.meta_data.mean + Number.EPSILON) * 100) / 100,
+            },
+          ]
         })
         .catch((e) => {
           console.log('*******Error**********')

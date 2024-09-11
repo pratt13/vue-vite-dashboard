@@ -14,12 +14,20 @@ import * as directives from 'vuetify/directives'
 
 // Font-awesome
 import FontAwesomeIcon from './fontawesome-icons'
+import { aliases, fa } from 'vuetify/iconsets/fa-svg'
 
 const app = createApp(App)
 
 const vuetify = createVuetify({
   components,
   directives,
+  icons: {
+    defaultSet: 'fa',
+    aliases,
+    sets: {
+      fa,
+    },
+  },
 })
 
 app.config.globalProperties.nightNightSix = 996
