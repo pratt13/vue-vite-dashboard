@@ -3,7 +3,7 @@
     <v-layout>
       <v-app-bar color="primary" prominent>
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>Glucose Dashboard</v-toolbar-title>
+        <v-toolbar-title class="align-start justify-start flex">{{ $route.name }}</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
@@ -87,6 +87,11 @@ export default {
   watch: {
     group() {
       this.drawer = false
+    },
+  },
+  methods: {
+    links: function () {
+      console.log(this.$route) // should work
     },
   },
 }

@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid fill-height class="align-start">
-    <v-row no-gutters>
+  <v-container fluid fill-height>
+    <v-row no-gutters class="flex" align="center" justify="center">
       <div id="header">Summary of Glucose Activities</div>
-      <v-col cols="10">
+      <v-col cols="10" style="min-width: 1000px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <LineChart
             :chartData="lineChartData"
@@ -12,7 +12,7 @@
           />
         </v-sheet>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="2" style="min-width: 200px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <VueDatePicker
             @update:model-value="handleRange"
@@ -29,8 +29,8 @@
       </v-col>
     </v-row>
 
-    <v-row no-gutters>
-      <v-col cols="5">
+    <v-row no-gutters class="flex" align="center" justify="center">
+      <v-col cols="5" style="min-width: 500px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <BarChart
             :chartData="countBarChartData"
@@ -40,7 +40,7 @@
           />
         </v-sheet>
       </v-col>
-      <v-col cols="5">
+      <v-col cols="5" style="min-width: 500px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <DoughnutChart
             :chartData="percentDoughnutChartData"
@@ -51,7 +51,7 @@
           />
         </v-sheet>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="2" style="min-width: 200px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <StatsCard :stats="statsData" />
         </v-sheet>
