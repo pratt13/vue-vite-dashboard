@@ -1,5 +1,5 @@
 {
-  "name": "vite-vue-ts-starter",
+  "name": "Glucose Monitoring",
   "version": "0.1.0",
   "type": "module",
   "author": "Pete",
@@ -44,6 +44,7 @@
     "moment": "^2.30.1",
     "nprogress": "0.2.0",
     "pinia": "2.2.0",
+    "tailwindcss": "^3.4.11",
     "vite-plugin-vuetify": "^2.0.4",
     "vue": "3.4.35",
     "vue-chartjs": "^5.3.1",
@@ -76,7 +77,6 @@
     "stylelint-config-recommended-vue": "1.5.0",
     "stylelint-config-standard": "36.0.1",
     "stylelint-order": "6.0.4",
-    "tailwindcss": "3.4.7",
     "typescript": "5.5.4",
     "vite": "5.3.5",
     "vue-tsc": "2.0.29"

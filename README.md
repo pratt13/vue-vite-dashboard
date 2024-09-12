@@ -1,6 +1,6 @@
-# Vite + Vue 3 + VueRouter + Pinia + TypeScript + TailwindCSS
+# Vite + Vue 3 + VueRouter + Pinia + TypeScript
 
-This template will help you start developing with Vue3 VueRouter Pinia TypeScript TailwindCSS in Vite.
+This template will help you start developing with Vue3 VueRouter Pinia TypeScript in Vite.
 
 **Editor:**
 
@@ -9,7 +9,6 @@ This template will help you start developing with Vue3 VueRouter Pinia TypeScrip
 **VSCode extension:**
 
 - [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
-- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 **Development ENV:**
 
@@ -19,7 +18,7 @@ This template will help you start developing with Vue3 VueRouter Pinia TypeScrip
 ## Clone
 
 ```shell
-git clone git@github.com:zhixiangyao/vite-vue-ts-starter.git
+git clone git@github.com/pratt13/vue-vite-dashboard
 cd vite-vue-ts-starter
 pnpm i # If not install pnpm, please run: npm install -g pnpm
 ```
