@@ -1,22 +1,10 @@
 <template>
-  <Doughnut :data="chartData" :options="chartOptions" />
+  <Doughnut v-if="active" :data="chartData" :options="chartOptions" />
 </template>
 
 <script>
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  Colors,
-} from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { Doughnut } from 'vue-chartjs'
-
-// Duplicate registration of some
-ChartJS.register(CategoryScale, ArcElement, Title, Tooltip, Legend, Colors)
 
 export default {
   name: 'DoughnutChart',
@@ -30,6 +18,10 @@ export default {
     chartOptions: {
       type: Object,
       default: () => {},
+    },
+    active: {
+      type: Boolean,
+      required: true,
     },
   },
 }

@@ -1,63 +1,43 @@
 <template>
-  <v-container fluid>
-    <v-row no-gutters align="center">
-      <div id="header">Summary of Glucose Activities</div>
-      <v-col cols="10">
-        <v-sheet class="pa-2 ma-2">
-          <LineChart
-            :chartData="lineChartData"
-            :chartOptions="lineChartOptions"
-            :width="800"
-            :height="200"
-          />
-        </v-sheet>
-      </v-col>
-      <v-col cols="2">
-        <v-sheet class="pa-2 ma-2">
-          <VueDatePicker
-            @update:model-value="handleRange"
-            v-model="date"
-            range
-            name="weekPicker"
-            :enable-time-picker="false"
-            :format="formatDateRange"
-          />
-        </v-sheet>
-        <v-sheet class="pa-2 ma-2">
-          <GlucoseRange />
-        </v-sheet>
-      </v-col>
-    </v-row>
-
-    <v-row no-gutters align="center">
-      <v-col cols="5">
-        <v-sheet class="pa-2 ma-2">
-          <BarChart
-            :chartData="countBarChartData"
-            :chartOptions="countBarChartOptions"
-            :width="600"
-            :height="300"
-          />
-        </v-sheet>
-      </v-col>
-      <v-col cols="5">
-        <v-sheet class="pa-2 ma-2">
-          <DoughnutChart
-            :chartData="percentDoughnutChartData"
-            :chartOptions="percentDoughnutChartOptions"
-            :width="600"
-            :height="300"
-            :active="doughnutLoaded"
-          />
-        </v-sheet>
-      </v-col>
-      <v-col cols="2">
-        <v-sheet class="pa-2 ma-2">
-          <StatsCard :stats="statsData" />
-        </v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div id="header">Summary of Glucose Activities</div>
+  <div id="grid">
+    <div class="wide">
+      <LineChart
+        :chartData="lineChartData"
+        :chartOptions="lineChartOptions"
+        :width="500"
+        :height="200"
+      />
+    </div>
+    <div class="justify-center space-y-2 items-center">
+      <VueDatePicker
+        @update:model-value="handleRange"
+        v-model="date"
+        range
+        name="weekPicker"
+        :enable-time-picker="false"
+        :format="formatDateRange"
+      />
+      <GlucoseRange />
+      <StatsCard :stats="statsData" />
+    </div>
+    <div class="medium">
+      <BarChart
+        :chartData="countBarChartData"
+        :chartOptions="countBarChartOptions"
+        :width="400"
+        :height="200"
+      />
+    </div>
+    <div class="medium">
+      <DoughnutChart
+        :chartData="percentDoughnutChartData"
+        :chartOptions="percentDoughnutChartOptions"
+        :width="400"
+        :height="200"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -104,7 +84,6 @@ export default {
       labels: [],
       datasets: [],
     }
-    this.doughnutLoaded = false
     this.lineChartOptions = {
       showLine: false,
       scales: {
@@ -141,8 +120,6 @@ export default {
       responsive: false,
       plugins: {
         datalabels: {
-          display: true,
-          align: 'bottom',
           formatter: (value) => {
             return Math.round(value, 2) + '%'
           },
@@ -164,7 +141,6 @@ export default {
       date: this.date,
       hbaValue: this.hbaValue,
       statsData: this.statsData,
-      doughnutLoaded: this.doughnutLoaded,
     }
   },
   mounted() {
@@ -268,7 +244,6 @@ export default {
               },
             ],
           }
-          this.doughnutLoaded = true
           this.statsData = [
             {
               metric: 'HbA1c',

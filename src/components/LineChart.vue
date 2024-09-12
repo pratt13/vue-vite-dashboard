@@ -4,31 +4,7 @@
 
 <script>
 import { Line } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  TimeScale,
-  PointElement,
-  LineElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js'
 import 'chartjs-adapter-moment'
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  TimeScale,
-  LinearScale,
-  Filler,
-)
 
 export default {
   name: 'LineChart',

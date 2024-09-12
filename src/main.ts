@@ -15,7 +15,6 @@ import * as directives from 'vuetify/directives'
 // Font-awesome
 import FontAwesomeIcon from './fontawesome-icons'
 import { aliases, fa } from 'vuetify/iconsets/fa-svg'
-
 const app = createApp(App)
 
 const vuetify = createVuetify({
@@ -31,6 +30,44 @@ const vuetify = createVuetify({
 })
 
 app.config.globalProperties.nightNightSix = 996
+
+// Register chart stuff
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  Colors,
+  BarElement,
+  LinearScale,
+  TimeScale,
+  PointElement,
+  LineElement,
+  Filler,
+} from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
+ChartJS.register(
+  CategoryScale,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+  BarElement,
+  LinearScale,
+  TimeScale,
+  PointElement,
+  LineElement,
+  Filler,
+  ChartDataLabels,
+)
+
+// Disable labels as default
+ChartJS.defaults.set('plugins.datalabels', {
+  display: false,
+})
 
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.use(router)
