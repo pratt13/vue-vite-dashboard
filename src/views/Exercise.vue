@@ -1,7 +1,5 @@
 <template>
   <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
-  <StatisticsCard />
-  <Hba1cCard />
 </template>
 
 <script>
@@ -9,16 +7,12 @@ import { defineAsyncComponent } from 'vue'
 import 'chartjs-adapter-moment'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
-const StatisticsCard = defineAsyncComponent(() => import('/@/components/StatisticsCard.vue'))
-const Hba1cCard = defineAsyncComponent(() => import('/@/components/Hba1cCard.vue'))
 
 const defaultMaxY = 18
 export default {
   name: 'GlucoseExerciseDashboard',
   components: {
     LineChart,
-    StatisticsCard,
-    Hba1cCard,
   },
   data() {
     this.lineChartData = {

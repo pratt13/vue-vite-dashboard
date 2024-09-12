@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid>
-    <v-row no-gutters align="center">
+  <v-container fluid fill-height class="align-start">
+    <v-row align="start" no-gutters>
       <div id="header">Summary of Glucose Activities</div>
       <v-col cols="10">
         <v-sheet class="pa-2 ma-2">

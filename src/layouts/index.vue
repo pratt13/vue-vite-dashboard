@@ -1,82 +1,15 @@
 <script lang="tsx">
-import { Teleport, defineComponent, provide, readonly } from 'vue'
-import { RouterView, useRouter } from 'vue-router'
+import { Teleport, defineComponent } from 'vue'
+import { RouterView } from 'vue-router'
 
-import { useAppStore } from '/@/stores'
-import { useCurrentRouteName } from '/@/hooks'
-import { defaultDataKey } from '/@/provide'
-
-import Navigation from './components/Navigation.vue'
 import Main from './components/Main.vue'
-import ToggleButton from './components/ToggleButton.vue'
 import Github from './components/Github.vue'
-
-const navbarList = [
-  {
-    id: 1,
-    label: 'Home',
-    name: 'Home',
-  },
-  {
-    id: 3,
-    label: 'Tailwind',
-    name: 'Tailwind',
-  },
-  {
-    id: 5,
-    label: 'Glucose',
-    name: 'Glucose',
-  },
-
-  {
-    id: 7,
-    label: 'Dashboard',
-    name: 'Dashboard',
-  },
-  {
-    id: 9,
-    label: 'Exercise',
-    name: 'Exercise',
-  },
-  {
-    id: 11,
-    label: 'Strava',
-    name: 'Strava',
-  },
-]
 
 export default defineComponent({
   name: 'Default',
   setup() {
-    const appStore = useAppStore()
-    const router = useRouter()
-    const routeName = useCurrentRouteName()
-    const defaultDataValue = 'hi'
-
-    provide(defaultDataKey, readonly(defaultDataValue))
-
     return () => (
       <>
-        <Navigation
-          v-slots={{
-            title: () => `${appStore.getTitle}`,
-            default: () =>
-              navbarList.map(({ id, label, name }) => (
-                <button
-                  key={id}
-                  class={[
-                    name === routeName.value && 'activated',
-                    'button text-white flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium',
-                  ]}
-                  onClick={() => router.push({ name })}
-                >
-                  {label}
-                </button>
-              )),
-            info: () => <ToggleButton />,
-          }}
-        />
-
         <Main>
           <RouterView />
         </Main>
