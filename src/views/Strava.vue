@@ -1,40 +1,56 @@
 <template>
-  <div id="header">Summary of Strava Activities</div>
-  <div id="grid">
-    <div class="wide">
-      <LineChart
-        :chartData="lineChartData"
-        :chartOptions="lineChartOptions"
-        :width="500"
-        :height="200"
-      />
-    </div>
-    <div class="widget">
-      <VueDatePicker
-        @update:model-value="handleDate"
-        model-value="month"
-        month-picker
-        name="monthPicker"
-      />
-    </div>
-
-    <div class="medium">
-      <BarChart
-        :chartData="countBarChartData"
-        :chartOptions="countBarChartOptions"
-        :width="400"
-        :height="200"
-      />
-    </div>
-    <div class="medium">
-      <BarChart
-        :chartData="distanceBarChartData"
-        :chartOptions="distanceBarChartOptions"
-        :width="400"
-        :height="200"
-      />
-    </div>
-  </div>
+  <v-container fluid fill-height class="align-start">
+    <v-row no-gutters>
+      <div id="header">Summary of Strava Activities</div>
+      <v-col cols="10">
+        <v-sheet class="pa-2 ma-2">
+          <LineChart
+            :chartData="lineChartData"
+            :chartOptions="lineChartOptions"
+            :width="500"
+            :height="150"
+          />
+        </v-sheet>
+      </v-col>
+      <v-col cols="2">
+        <v-sheet class="pa-2 ma-2">
+          <VueDatePicker
+            @update:model-value="handleDate"
+            model-value="month"
+            month-picker
+            name="monthPicker"
+          />
+        </v-sheet>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col cols="6">
+        <v-sheet class="pa-2 ma-2">
+          <BarChart
+            :chartData="countBarChartData"
+            :chartOptions="countBarChartOptions"
+            :width="400"
+            :height="200"
+          />
+        </v-sheet>
+      </v-col>
+      <v-col cols="6">
+        <v-sheet class="pa-2 ma-2">
+          <BarChart
+            :chartData="distanceBarChartData"
+            :chartOptions="distanceBarChartOptions"
+            :width="400"
+            :height="200"
+          />
+        </v-sheet>
+      </v-col>
+      <v-col cols="2">
+        <v-sheet class="pa-2 ma-2">
+          <StatsCard :stats="statsData" />
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

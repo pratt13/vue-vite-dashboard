@@ -1,9 +1,8 @@
 <script lang="tsx">
-import { Teleport, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
 
 import Main from './components/Main.vue'
-import Github from './components/Github.vue'
 
 export default defineComponent({
   name: 'Default',
@@ -13,10 +12,6 @@ export default defineComponent({
         <Main>
           <RouterView />
         </Main>
-
-        <Teleport to="#global-components">
-          <Github class="xl:block" href="https://github.com/pratt13/glucose_app_frontend" />
-        </Teleport>
       </>
     )
   },

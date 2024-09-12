@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height class="align-start">
-    <v-row align="start" no-gutters>
+    <v-row no-gutters>
       <div id="header">Summary of Glucose Activities</div>
       <v-col cols="10">
         <v-sheet class="pa-2 ma-2">
@@ -29,7 +29,7 @@
       </v-col>
     </v-row>
 
-    <v-row no-gutters align="center">
+    <v-row no-gutters>
       <v-col cols="5">
         <v-sheet class="pa-2 ma-2">
           <BarChart

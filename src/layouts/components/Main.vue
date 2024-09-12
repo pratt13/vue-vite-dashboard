@@ -8,12 +8,11 @@
         <v-spacer></v-spacer>
 
         <template v-if="$vuetify.display.mdAndUp">
-          <v-btn icon="mdi-magnify" variant="text"></v-btn>
-
-          <v-btn icon="mdi-filter" variant="text"></v-btn>
+          <v-btn icon="fas fa-magnifying-glass" variant="text"></v-btn>
+          <!-- Hack margin right to allow the github component to lie on the last part -->
+          <v-btn icon="fas fa-filter" variant="text" class="mr-10"></v-btn>
         </template>
-
-        <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+        <Github class="xl:block" href="https://github.com/pratt13/glucose_app_frontend" />
       </v-app-bar>
 
       <v-navigation-drawer
@@ -43,7 +42,12 @@
 </template>
 
 <script>
+import Github from './Github.vue'
+
 export default {
+  components: {
+    Github,
+  },
   data: () => ({
     drawer: false,
     group: null,
