@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid fill-height class="align-start">
-    <v-row no-gutters>
+  <v-container fluid fill-height>
+    <v-row no-gutters class="flex" align="center" justify="center">
       <div id="header">Summary of Strava Activities</div>
-      <v-col cols="10">
+      <v-col cols="10" style="min-width: 1000px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <LineChart
             :chartData="lineChartData"
@@ -12,7 +12,7 @@
           />
         </v-sheet>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="2" style="min-width: 200px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <VueDatePicker
             @update:model-value="handleDate"
@@ -23,23 +23,24 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <v-row no-gutters>
-      <v-col cols="6">
+
+    <v-row no-gutters class="flex" align="center" justify="center">
+      <v-col cols="5" style="min-width: 500px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <BarChart
             :chartData="countBarChartData"
             :chartOptions="countBarChartOptions"
-            :width="400"
+            :width="500"
             :height="200"
           />
         </v-sheet>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="5" style="min-width: 500px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <BarChart
             :chartData="distanceBarChartData"
             :chartOptions="distanceBarChartOptions"
-            :width="400"
+            :width="500"
             :height="200"
           />
         </v-sheet>
@@ -80,6 +81,8 @@ const BORDER_COLOURS = [
 ]
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
+const StatsCard = defineAsyncComponent(() => import('/@/components/StatsCard.vue'))
+
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 export default {
   name: 'StravaDashboard',
@@ -87,6 +90,7 @@ export default {
     BarChart,
     LineChart,
     VueDatePicker,
+    StatsCard,
   },
   data() {
     this.lineChartData = {
@@ -165,6 +169,7 @@ export default {
         },
       },
     }
+    this.statsData = []
     return {
       lineChartData: this.lineChartData,
       lineChartOptions: this.lineChartOptions,
@@ -173,6 +178,7 @@ export default {
       distanceBarChartOptions: this.distanceBarChartOptions,
       countBarChartOptions: this.countBarChartOptions,
       month: moment().startOf('month').format(DATE_FORMAT),
+      statsData: this.statsData,
     }
   },
   mounted() {
@@ -230,6 +236,24 @@ export default {
               },
             ],
           }
+
+          this.statsData = [
+            {
+              metric: 'Number of Activities',
+              icon: 'fas fa-person-running',
+              value: `${activity_types.map((t) => stravaData.meta_data[t].number_activities).reduce((partialSum, a) => partialSum + a, 0)}m`,
+            },
+            {
+              metric: 'Number of types of Activities',
+              icon: 'fas fa-medal',
+              value: activity_types.length,
+            },
+            {
+              metric: 'Total distance',
+              icon: 'fas fa-shoe-prints',
+              value: `${activity_types.map((t) => stravaData.meta_data[t].distance).reduce((partialSum, a) => partialSum + a, 0)}m`,
+            },
+          ]
         })
         .catch((e) => {
           console.log('*******Error**********')
