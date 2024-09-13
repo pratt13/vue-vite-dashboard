@@ -1,5 +1,7 @@
 <template>
-  <Bar :data="chartData" :options="chartOptions" />
+  <v-card class="m-2 pa-2" align="center" variant="outlined">
+    <Bar :data="chartData" :options="chartOptions" />
+  </v-card>
 </template>
 
 <script>

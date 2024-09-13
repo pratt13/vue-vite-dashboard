@@ -30,18 +30,18 @@
     </v-row>
 
     <v-row no-gutters class="flex" align="center" justify="center">
-      <v-col cols="5" style="min-width: 500px; min-height: 200px">
-        <v-sheet class="pa-2 ma-2">
+      <v-col class="pa-2 ma-2" cols="5" style="min-width: 600px; min-height: 350px">
+        <v-sheet>
           <BarChart
             :chartData="countBarChartData"
             :chartOptions="countBarChartOptions"
             :width="600"
-            :height="300"
+            :height="350"
           />
         </v-sheet>
       </v-col>
-      <v-col cols="5" style="min-width: 500px; min-height: 200px">
-        <v-sheet class="pa-2 ma-2">
+      <v-col class="pa-2 ma-2" cols="5" style="min-width: 600px; min-height: 350px">
+        <v-sheet>
           <DoughnutChart
             :chartData="percentDoughnutChartData"
             :chartOptions="percentDoughnutChartOptions"
@@ -134,7 +134,7 @@ export default {
       },
     }
     this.countBarChartOptions = {
-      responsive: false,
+      responsive: true,
       scales: {
         y: {
           ticks: {
@@ -144,7 +144,7 @@ export default {
       },
     }
     this.percentDoughnutChartOptions = {
-      responsive: false,
+      responsive: true,
       plugins: {
         datalabels: {
           display: true,
