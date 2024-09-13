@@ -239,17 +239,19 @@ export default {
 
           this.statsData = [
             {
-              metric: 'Number of Activities',
+              metric: 'Activities',
               icon: 'fas fa-person-running',
-              value: `${activity_types.map((t) => stravaData.meta_data[t].number_activities).reduce((partialSum, a) => partialSum + a, 0)}m`,
+              value: activity_types
+                .map((t) => stravaData.meta_data[t].number_activities)
+                .reduce((partialSum, a) => partialSum + a, 0),
             },
             {
-              metric: 'Number of types of Activities',
+              metric: 'Types of Activities',
               icon: 'fas fa-medal',
               value: activity_types.length,
             },
             {
-              metric: 'Total distance',
+              metric: 'Distance',
               icon: 'fas fa-shoe-prints',
               value: `${activity_types.map((t) => stravaData.meta_data[t].distance).reduce((partialSum, a) => partialSum + a, 0)}m`,
             },
