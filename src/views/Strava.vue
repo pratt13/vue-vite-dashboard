@@ -218,8 +218,6 @@ export default {
               {
                 label: 'Activity Count',
                 data: activity_types.map((t) => stravaData.meta_data[t].number_activities),
-                backgroundColor: BACKGROUND_COLOURS,
-                borderColor: BORDER_COLOURS,
                 borderWidth: 1,
               },
             ],
@@ -230,8 +228,6 @@ export default {
               {
                 label: 'Activity Distance',
                 data: activity_types.map((t) => stravaData.meta_data[t].distance),
-                backgroundColor: BACKGROUND_COLOURS,
-                borderColor: BORDER_COLOURS,
                 borderWidth: 1,
               },
             ],

@@ -90,6 +90,20 @@ ChartJS.defaults.set('plugins.datalabels', {
   display: false,
 })
 
+// Custom colour scheme
+import autocolors from 'chartjs-plugin-autocolors'
+import { BACKGROUND_COLOURS, BORDER_COLOURS } from '/@/utils/constants'
+ChartJS.register(autocolors)
+
+ChartJS.defaults.set('plugins.autocolors', {
+  customize(_ctx: any) {
+    return {
+      background: BACKGROUND_COLOURS,
+      border: BORDER_COLOURS,
+    }
+  },
+})
+
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.use(router)
 app.use(createPinia())

@@ -66,6 +66,8 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
+import { warningColour, inRangeColour, singleMarkerColour } from '/@/utils/constants.ts'
+
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 const DoughnutChart = defineAsyncComponent(() => import('/@/components/DoughnutChart.vue'))
@@ -112,10 +114,16 @@ export default {
           min: 0,
           suggestedMax: defaultMaxY,
           stepSize: 1,
+          grid: {
+            display: false,
+          },
         },
         x: {
           display: true,
           type: 'time',
+          grid: {
+            display: false,
+          },
           ticks: {
             // forces step size to be 50 units
             stepSize: 2,
@@ -187,6 +195,7 @@ export default {
       this.fetchDataFromAPI()
     },
     fetchDataFromAPI() {
+      this.doughnutLoaded = false
       fetch(`http://localhost:5000/glucose/meta?start=${this.date[0]}&end=${this.date[1]}`, {
         method: 'GET',
       })
@@ -201,8 +210,8 @@ export default {
               {
                 label: 'Glucose Level Tracker',
                 fill: false,
-                borderColor: 'rgb(251, 8, 162)',
-                backgroundColor: 'rgb(251, 8, 162)',
+                borderColor: singleMarkerColour,
+                backgroundColor: singleMarkerColour,
                 borderWidth: 1,
                 pointRadius: 3,
                 data: glucoseData.raw_data.map((d) => ({ x: d[1], y: d[0] })),
@@ -210,7 +219,8 @@ export default {
               {
                 label: 'low',
                 radius: 0,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: warningColour,
+                backgroundColor: warningColour,
                 tension: 0.1,
                 hoverOffset: 4,
                 data: glucoseData.raw_data.map((d) => ({ x: d[1], y: 4 })),
@@ -219,7 +229,8 @@ export default {
               {
                 label: 'target',
                 radius: 0,
-                backgroundColor: 'rgb(221,255,221)',
+                borderColor: inRangeColour,
+                backgroundColor: inRangeColour,
                 tension: 0.1,
                 hoverOffset: 4,
                 data: glucoseData.raw_data.map((d) => ({ x: d[1], y: 10 })),
@@ -228,7 +239,9 @@ export default {
               {
                 label: 'high',
                 radius: 0,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                backgroundColor: warningColour,
+                borderColor: warningColour,
+                backgroundColor: warningColour,
                 tension: 0.1,
                 hoverOffset: 4,
                 data: glucoseData.raw_data.map((d) => ({ x: d[1], y: maxValue })),
