@@ -10,8 +10,9 @@
         <template v-if="$vuetify.display.mdAndUp">
           <v-btn icon="fas fa-magnifying-glass" variant="text"></v-btn>
           <!-- Hack margin right to allow the github component to lie on the last part -->
-          <v-btn icon="fas fa-filter" variant="text" class="mr-10"></v-btn>
+          <v-btn icon="fas fa-filter" variant="text"></v-btn>
         </template>
+        <Theme />
         <Github class="xl:block" href="https://github.com/pratt13/glucose_app_frontend" />
       </v-app-bar>
 
@@ -43,10 +44,12 @@
 
 <script>
 import Github from './Github.vue'
+import Theme from './Theme.vue'
 
 export default {
   components: {
     Github,
+    Theme,
   },
   data: () => ({
     drawer: false,
