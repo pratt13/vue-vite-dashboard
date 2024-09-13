@@ -1,5 +1,6 @@
 <template>
-  <v-card class="mx-auto" max-width="368">
+  <v-card class="mx-auto" max-width="368" variant="outlined">
+    <div class="text-h4">Summary</div>
     <v-card-text class="py-0">
       <v-list>
         <v-list-item

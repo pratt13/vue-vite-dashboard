@@ -1,15 +1,10 @@
 <template>
   <v-container fluid fill-height>
+    <div class="text-h1 text-left">Summary of Strava Activities</div>
     <v-row no-gutters class="flex" align="center" justify="center">
-      <div id="header">Summary of Strava Activities</div>
-      <v-col cols="10" style="min-width: 1000px; min-height: 200px">
+      <v-col cols="8" style="min-width: 1000px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
-          <LineChart
-            :chartData="lineChartData"
-            :chartOptions="lineChartOptions"
-            :width="500"
-            :height="150"
-          />
+          <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
         </v-sheet>
       </v-col>
       <v-col cols="2" style="min-width: 200px; min-height: 200px">
@@ -98,6 +93,7 @@ export default {
       datasets: [],
     }
     this.lineChartOptions = {
+      responsive: true,
       showLine: true,
       scales: {
         y: {

@@ -1,5 +1,7 @@
 <template>
-  <Doughnut v-if="active" :data="chartData" :options="chartOptions" />
+  <v-card class="m-2 pa-2" align="center" variant="outlined">
+    <Doughnut v-if="active" :data="chartData" :options="chartOptions" />
+  </v-card>
 </template>
 
 <script>

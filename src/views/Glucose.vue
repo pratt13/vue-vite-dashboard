@@ -1,15 +1,15 @@
 <template>
   <v-container fluid fill-height>
+    <div class="text-h1 text-left">Glucose Activities</div>
     <v-row no-gutters class="flex" align="center" justify="center">
-      <div id="header">Summary of Glucose Activities</div>
-      <v-col cols="10" style="min-width: 1000px; min-height: 200px">
+      <v-col cols="8" align="center" justify="center" style="min-width: 1000px">
         <v-sheet class="pa-2 ma-2">
-          <LineChart
-            :chartData="lineChartData"
-            :chartOptions="lineChartOptions"
-            :width="800"
-            :height="200"
-          />
+          <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
+        </v-sheet>
+      </v-col>
+      <v-col cols="2" style="min-width: 200px; min-height: 200px">
+        <v-sheet class="pa-2 ma-2">
+          <StatsCard :stats="statsData" />
         </v-sheet>
       </v-col>
       <v-col cols="2" style="min-width: 200px; min-height: 200px">
@@ -46,14 +46,9 @@
             :chartData="percentDoughnutChartData"
             :chartOptions="percentDoughnutChartOptions"
             :width="600"
-            :height="300"
+            :height="350"
             :active="doughnutLoaded"
           />
-        </v-sheet>
-      </v-col>
-      <v-col cols="2" style="min-width: 200px; min-height: 200px">
-        <v-sheet class="pa-2 ma-2">
-          <StatsCard :stats="statsData" />
         </v-sheet>
       </v-col>
     </v-row>
@@ -108,6 +103,9 @@ export default {
     }
     this.doughnutLoaded = false
     this.lineChartOptions = {
+      devicePixelRatio: 2,
+      responsive: true,
+      maintainAspectRatio: false,
       showLine: false,
       scales: {
         y: {

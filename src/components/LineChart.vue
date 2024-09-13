@@ -1,5 +1,7 @@
 <template>
-  <Line :data="chartData" :options="chartOptions" />
+  <v-card min-height="500" max-height="500" min-width="1000" max-width="1000" variant="outlined">
+    <Line :data="chartData" :options="chartOptions" />
+  </v-card>
 </template>
 
 <script>
