@@ -7,7 +7,7 @@
           <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
         </v-sheet>
       </v-col>
-      <v-col cols="2" style="min-width: 200px; min-height: 200px">
+      <v-col cols="2" style="min-width: 300px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <VueDatePicker
             @update:model-value="handleDate"
@@ -15,34 +15,32 @@
             month-picker
             name="monthPicker"
           />
+          <v-sheet class="pa-2 ma-2">
+            <StatsCard :stats="statsData" />
+          </v-sheet>
         </v-sheet>
       </v-col>
     </v-row>
 
     <v-row no-gutters class="flex" align="center" justify="center">
-      <v-col cols="5" style="min-width: 500px; min-height: 200px">
+      <v-col cols="6" style="min-width: 600px; min-height: 350px">
         <v-sheet class="pa-2 ma-2">
           <BarChart
             :chartData="countBarChartData"
             :chartOptions="countBarChartOptions"
-            :width="500"
-            :height="200"
+            :width="600"
+            :height="350"
           />
         </v-sheet>
       </v-col>
-      <v-col cols="5" style="min-width: 500px; min-height: 200px">
+      <v-col cols="6" style="min-width: 600px; min-height: 350px">
         <v-sheet class="pa-2 ma-2">
           <BarChart
             :chartData="distanceBarChartData"
             :chartOptions="distanceBarChartOptions"
-            :width="500"
-            :height="200"
+            :width="600"
+            :height="350"
           />
-        </v-sheet>
-      </v-col>
-      <v-col cols="2">
-        <v-sheet class="pa-2 ma-2">
-          <StatsCard :stats="statsData" />
         </v-sheet>
       </v-col>
     </v-row>
@@ -55,25 +53,8 @@ import 'chartjs-adapter-moment'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import moment from 'moment'
+import { BACKGROUND_COLOURS, BORDER_COLOURS } from '/@/utils/constants'
 
-const BACKGROUND_COLOURS = [
-  'rgba(255, 99, 132, 0.2)',
-  'rgba(255, 159, 64, 0.2)',
-  'rgba(255, 205, 86, 0.2)',
-  'rgba(75, 192, 192, 0.2)',
-  'rgba(54, 162, 235, 0.2)',
-  'rgba(153, 102, 255, 0.2)',
-  'rgba(201, 203, 207, 0.2)',
-]
-const BORDER_COLOURS = [
-  'rgb(255, 99, 132)',
-  'rgb(255, 159, 64)',
-  'rgb(255, 205, 86)',
-  'rgb(75, 192, 192)',
-  'rgb(54, 162, 235)',
-  'rgb(153, 102, 255)',
-  'rgb(201, 203, 207)',
-]
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 const StatsCard = defineAsyncComponent(() => import('/@/components/StatsCard.vue'))
@@ -130,7 +111,7 @@ export default {
       datasets: [],
     }
     this.countBarChartOptions = {
-      responsive: false,
+      responsive: true,
       scales: {
         y: {
           min: 0,
@@ -149,7 +130,7 @@ export default {
       },
     }
     this.distanceBarChartOptions = {
-      responsive: false,
+      responsive: true,
       scales: {
         y: {
           min: 0,

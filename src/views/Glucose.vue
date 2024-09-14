@@ -7,12 +7,7 @@
           <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
         </v-sheet>
       </v-col>
-      <v-col cols="2" style="min-width: 200px; min-height: 200px">
-        <v-sheet class="pa-2 ma-2">
-          <StatsCard :stats="statsData" />
-        </v-sheet>
-      </v-col>
-      <v-col cols="2" style="min-width: 200px; min-height: 200px">
+      <v-col cols="2" style="min-width: 350px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <VueDatePicker
             @update:model-value="handleRange"
@@ -25,6 +20,9 @@
         </v-sheet>
         <v-sheet class="pa-2 ma-2">
           <GlucoseRange />
+        </v-sheet>
+        <v-sheet class="pa-2 ma-2">
+          <StatsCard :stats="statsData" />
         </v-sheet>
       </v-col>
     </v-row>
