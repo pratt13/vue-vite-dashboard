@@ -12,6 +12,9 @@ import { createVuetify, type ThemeDefinition } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
+// Manually install experimental compoennets
+import * as labsComponents from 'vuetify/labs/components'
+
 // Font-awesome
 import FontAwesomeIcon from './fontawesome-icons'
 import { aliases, fa } from 'vuetify/iconsets/fa-svg'
@@ -35,7 +38,10 @@ const customLightTheme: ThemeDefinition = {
 }
 
 const vuetify = createVuetify({
-  components,
+  components: {
+    ...components,
+    ...labsComponents,
+  },
   directives,
   icons: {
     defaultSet: 'fa',
@@ -105,6 +111,7 @@ ChartJS.defaults.set('plugins.autocolors', {
 })
 
 app.component('FontAwesomeIcon', FontAwesomeIcon)
+// app.component('VDatePicker', VDatePicker)
 app.use(router)
 app.use(createPinia())
 app.use(vuetify)

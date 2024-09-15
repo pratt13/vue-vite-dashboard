@@ -1,5 +1,26 @@
 <template>
-  <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" :width="50" :height="10" />
+  <v-container fluid fill-height>
+    <div class="text-h1 text-left">Daily Dashboard</div>
+    <v-row no-gutters class="flex" align="center" justify="center">
+      <v-col cols="8" align="center" justify="center" style="min-width: 1000px">
+        <v-sheet class="pa-2 ma-2">
+          <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
+        </v-sheet>
+      </v-col>
+      <v-col cols="2" style="min-width: 350px; min-height: 200px">
+        <v-sheet class="pa-2 ma-2">
+          <v-date-input
+            v-model="model"
+            label="Select range"
+            multiple="range"
+            color="primary"
+            variant="underlined"
+            :max="maxDate"
+          ></v-date-input>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -10,12 +31,15 @@ import moment from 'moment'
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 
 const defaultMaxY = 18
+const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+
 export default {
   name: 'DailyDashboard',
   components: {
     LineChart,
   },
   data() {
+    this.maxDate = moment().endOf('day').format(DATETIME_FORMAT)
     this.lineChartData = {
       labels: [],
       datasets: [],
@@ -42,6 +66,7 @@ export default {
     return {
       lineChartData: this.lineChartData,
       lineChartOptions: this.lineChartOptions,
+      model: null,
     }
   },
   mounted() {
