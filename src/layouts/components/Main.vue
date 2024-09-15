@@ -22,16 +22,55 @@
         temporary
       >
         <v-list density="compact" nav>
+          <!-- <v-list v-model:opened="open"> -->
+          <!-- Home -No Group -->
           <v-list-item
-            v-for="page in pages"
-            :key="page.id"
-            :prepend-icon="page.icon"
-            :title="page.title"
+            :key="homePage.id"
+            :prepend-icon="homePage.icon"
+            :title="homePage.title"
             router
-            :to="page.route"
-          >
-            <v-list-item-action></v-list-item-action>
-          </v-list-item>
+            :to="homePage.route"
+          ></v-list-item>
+
+          <v-list-group value="Glucose">
+            <template #activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                prepend-icon="fas fa-stethoscope"
+                title="Glucose"
+              ></v-list-item>
+            </template>
+
+            <v-list-item
+              v-for="page in glucosePages"
+              :key="page.id"
+              :prepend-icon="page.icon"
+              :title="page.title"
+              router
+              :to="page.route"
+            ></v-list-item>
+          </v-list-group>
+
+          <!-- Exercise -->
+
+          <v-list-group value="Exercise">
+            <template #activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                prepend-icon="fas fa-person-walking"
+                title="Exercise"
+              ></v-list-item>
+            </template>
+
+            <v-list-item
+              v-for="page in exercisePages"
+              :key="page.id"
+              :prepend-icon="page.icon"
+              :title="page.title"
+              router
+              :to="page.route"
+            ></v-list-item>
+          </v-list-group>
         </v-list>
       </v-navigation-drawer>
 
@@ -54,13 +93,13 @@ export default {
   data: () => ({
     drawer: false,
     group: null,
-    pages: [
-      {
-        id: 1,
-        title: 'Home',
-        route: 'Home',
-        icon: 'fas fa-house',
-      },
+    homePage: {
+      id: 1,
+      title: 'Home',
+      route: 'Home',
+      icon: 'fas fa-house',
+    },
+    glucosePages: [
       {
         id: 3,
         title: 'Glucose',
@@ -74,11 +113,19 @@ export default {
         icon: 'fas fa-gauge',
       },
       {
-        id: 7,
-        title: 'Exercise',
-        route: 'Exercise',
-        icon: 'fas fa-heart-pulse',
+        id: 5,
+        title: 'Dashboard',
+        route: 'Dashboard',
+        icon: 'fas fa-gauge',
       },
+      {
+        id: 6,
+        title: 'Daily Dashboard',
+        route: 'DailyDashboard',
+        icon: 'fas fa-gauge',
+      },
+    ],
+    exercisePages: [
       {
         id: 9,
         title: 'Strava',
