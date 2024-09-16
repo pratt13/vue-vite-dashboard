@@ -25,12 +25,13 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
-// TODO: import GlucoseService from '/@/services/glucose.ts'
+import GlucoseService from '/@/services/glucose.ts'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
+import { warningColour, blackColour, warningColourDark } from '/@/utils/constants.ts'
+
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 
-const defaultMaxY = 18
 const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export default {
@@ -39,130 +40,87 @@ export default {
     LineChart,
   },
   data() {
-    this.maxDate = moment().endOf('day').format(DATETIME_FORMAT)
-    this.lineChartData = {
-      labels: [],
-      datasets: [],
-    }
-    this.lineChartOptions = {
+    const defaultLineChartOptions = {
       //showLine: false,
       scales: {
         y: {
           min: 0,
-          suggestedMax: defaultMaxY,
+          suggestedMax: 18,
         },
         x: {
           display: true,
           type: 'time',
-          //unit: "minute",
+          unit: 'hour',
           min: moment('00:00:01', 'hh:mm:ss'),
+          max: moment('23:59:59', 'hh:mm:ss'),
           title: {
             display: true,
             text: 'Time',
+          },
+          ticks: {
+            // forces step size to be 2 hours
+            stepSize: 2,
           },
         },
       },
     }
     return {
-      lineChartData: this.lineChartData,
-      lineChartOptions: this.lineChartOptions,
+      lineChartData: {
+        labels: [],
+        datasets: [],
+      },
+      lineChartOptions: defaultLineChartOptions,
       model: null,
+      maxDate: moment().endOf('day').format(DATETIME_FORMAT),
+      glucoseService: new GlucoseService(),
     }
   },
-  mounted() {
+  created() {
+    // Created or Mounted
     this.fetchDataFromAPI()
   },
   methods: {
-    fetchDataFromAPI() {
-      fetch('http://localhost:5000/glucose/aggregate/15min', {
-        method: 'GET',
-      })
-        .then((response) => response.json())
-        .then((glucoseData) => {
-          console.log('Getting Data')
-          const {
-            median: medianData,
-            raw: rawData,
-            intervals,
-            q10: q10,
-            q25: q25,
-            q75: q75,
-            q90: q90,
-          } = glucoseData
-          const maxValue = Math.max(...rawData.flat(1)) + 1
-          const formattedChartData = {
-            datasets: [
-              {
-                label: 'Lower Q10 Quantile',
-                fill: false,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 1,
-                pointRadius: 3,
-                data: q10.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
-                  y: d,
-                })),
-              },
-              {
-                label: 'Lower Q25 Quantile',
-                fill: false,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 1,
-                pointRadius: 3,
-                data: q25.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
-                  y: d,
-                })),
-              },
-              {
-                label: 'Median Glucose Level',
-                fill: 1,
-                borderColor: 'rgb(251, 8, 162)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 1,
-                pointRadius: 3,
-                data: medianData.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
-                  y: d,
-                })),
-              },
+    async fetchDataFromAPI() {
+      // Get data
+      const {
+        median: medianData,
+        raw: rawData,
+        intervals,
+        q10: q10,
+        q25: q25,
+        q75: q75,
+        q90: q90,
+      } = await this.glucoseService.getAggregateData()
 
-              {
-                label: 'Upper Q75 Quantlie',
-                fill: 0,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 1,
-                pointRadius: 3,
-                data: q75.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
-                  y: d,
-                })),
-              },
-              {
-                label: 'Upper Q75 Quantlie',
-                fill: 0,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 1,
-                pointRadius: 3,
-                data: q90.map((d, index) => ({
-                  x: moment(intervals[index], 'hh:mm'),
-                  y: d,
-                })),
-              },
-            ],
-            labels: intervals.map((d) => moment(d, 'hh:mm')),
-          }
-          this.lineChartData = formattedChartData
-          const def = this.lineChartOptions
-          this.lineChartOptions = {
-            ...def,
-            scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
-          }
-        })
-        .catch((e) => {
-          console.log('*******Error**********')
-          console.log(e)
-        })
+      const maxValue = Math.max(...rawData.flat(1)) + 1
+      // Fill the inner quartile darker
+      const dataSets = [
+        { label: 'Q10 Quantile', data: q10, fill: 0, borderColor: warningColour },
+        { label: 'Q25 Quantile', data: q25, fill: false, borderColor: warningColourDark },
+        { label: 'Q75 Quantile', data: q75, fill: 1, borderColor: warningColourDark },
+        { label: 'Median', data: medianData, fill: false, borderColor: blackColour },
+        { label: 'Q90 Quantile', data: q90, fill: 0, borderColor: warningColour },
+      ]
+      this.lineChartData = {
+        datasets: dataSets.map((d) => ({
+          label: d.label,
+          fill: d.fill,
+          backgroundColor: d.borderColor,
+          borderColor: d.borderColor,
+          borderWidth: 1,
+          pointRadius: 0,
+          data: d.data.map((d, index) => ({
+            x: moment(intervals[index], 'hh:mm'),
+            y: d,
+          })),
+        })),
+        labels: intervals.map((d) => moment(d, 'hh:mm')),
+      }
+      const def = this.lineChartOptions
+      this.lineChartOptions = {
+        ...def,
+        scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
+      }
     },
   },
 }

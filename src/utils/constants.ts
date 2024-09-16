@@ -18,6 +18,8 @@ export const BORDER_COLOURS = [
   'rgb(201, 203, 207)',
 ]
 
+export const blackColour = 'rgba(0,0,0,1)'
+export const warningColourDark = 'rgba(255, 99, 132, 0.4)'
 export const warningColour = 'rgba(255, 99, 132, 0.2)'
 export const inRangeColour = 'rgba(221, 255, 211, 0.4)'
 export const singleMarkerColour = 'rgb(251, 8, 162)'
