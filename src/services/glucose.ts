@@ -1,8 +1,27 @@
-import { GlucoseAggregateData, GlucoseMedianData } from '../utils/intrface'
+import {
+  GlucoseAggregateData,
+  GlucoseMedianData,
+  GlucoseRecords,
+  GlucoseTrackerData,
+} from '../utils/interface'
 
 export default class GlucoseService {
-  async getAll(): Promise<any> {
+  async getAll(): Promise<GlucoseRecords> {
     return await fetch('http://localhost:5000/glucose', {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((glucoseData: [string, number][]) => ({ rawData: glucoseData }))
+      .catch((err) => {
+        console.error(err)
+        // TODO: Notistack
+        // Return empty to enable No data rendering
+        return { rawData: [] } as GlucoseRecords
+      })
+  }
+
+  async getMetaData(): Promise<GlucoseTrackerData> {
+    return await fetch('http://localhost:5000/glucose/meta', {
       method: 'GET',
     })
       .then((response) => response.json())

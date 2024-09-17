@@ -23,3 +23,7 @@ export const warningColourDark = 'rgba(255, 99, 132, 0.4)'
 export const warningColour = 'rgba(255, 99, 132, 0.2)'
 export const inRangeColour = 'rgba(221, 255, 211, 0.4)'
 export const singleMarkerColour = 'rgb(251, 8, 162)'
+
+export const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+
+export const defaultMaxGlucose = 18

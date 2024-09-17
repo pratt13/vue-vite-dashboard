@@ -29,11 +29,14 @@ import { defineAsyncComponent } from 'vue'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
 import GlucoseService from '/@/services/glucose.ts'
-import { warningColour, blackColour, warningColourDark } from '/@/utils/constants.ts'
+import {
+  warningColour,
+  blackColour,
+  warningColourDark,
+  DATETIME_FORMAT,
+} from '/@/utils/constants.ts'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
-
-const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export default {
   name: 'DailyDashboard',

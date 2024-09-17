@@ -21,6 +21,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('/@/views/Glucose.vue'),
       },
       {
+        path: 'GlucoseTracker',
+        name: 'GlucoseTracker',
+        component: () => import('/@/views/GlucoseTracker.vue'),
+      },
+      {
         path: 'MomentDashboard',
         name: 'MomentDashboard',
         component: () => import('/@/views/MomentDashboard.vue'),

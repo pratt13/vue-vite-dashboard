@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height>
-    <div class="text-h1 text-left">Mean Values</div>
+    <div class="text-h1 text-left">Tracker</div>
     <v-row no-gutters class="flex" align="center" justify="center">
       <v-col cols="8" align="center" justify="center" style="min-width: 1000px">
         <v-sheet class="pa-2 ma-2">
@@ -30,19 +30,23 @@ import 'chartjs-adapter-moment'
 import moment from 'moment'
 import {
   warningColour,
-  blackColour,
+  inRangeColour,
   DATETIME_FORMAT,
   defaultMaxGlucose,
+  singleMarkerColour,
 } from '/@/utils/constants.ts'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 
 export default {
-  name: 'MomentDashboard',
+  name: 'GlucoseTrackerDashboard',
   components: {
     LineChart,
   },
   data() {
+    const now = moment().format(DATETIME_FORMAT)
+    const endOfToday = moment().endOf('day').format(DATETIME_FORMAT)
+    const startOfToday = moment().startOf('day').format(DATETIME_FORMAT)
     const defaultLineChartOptions = {
       scales: {
         y: {
@@ -53,12 +57,12 @@ export default {
           display: true,
           type: 'time',
           unit: 'hour',
-          min: moment('00:00:01', 'hh:mm:ss'),
-          max: moment('23:59:59', 'hh:mm:ss'),
-          ticks: {
-            // forces step size to be 2 hours
-            stepSize: 2,
-          },
+          min: startOfToday,
+          max: now,
+          // ticks: {
+          //   // forces step size to be 2 hours
+          //   stepSize: 2,
+          // },
           title: {
             display: true,
             text: 'Time',
@@ -66,8 +70,6 @@ export default {
         },
       },
     }
-    const endOfToday = moment().endOf('day').format(DATETIME_FORMAT)
-    const startOfYear = moment().startOf('year').format(DATETIME_FORMAT)
     return {
       lineChartData: {
         labels: [],
@@ -77,14 +79,14 @@ export default {
       model: null,
       maxDate: endOfToday,
       glucoseService: new GlucoseService(),
-      dateRange: [startOfYear, endOfToday],
+      dateRange: [startOfToday, now],
     }
   },
   created() {
     // Created or Mounted
     this.handleRange({
-      0: moment().startOf('year').format(DATETIME_FORMAT),
-      1: moment().endOf('year').format(DATETIME_FORMAT),
+      0: moment().startOf('day').format(DATETIME_FORMAT),
+      1: moment().format(DATETIME_FORMAT),
     })
     this.fetchDataFromAPI()
   },
@@ -101,25 +103,31 @@ export default {
       this.fetchDataFromAPI()
     },
     async fetchDataFromAPI() {
-      const {
-        mean: meanData,
-        raw: rawData,
-        intervals,
-        std: stdData,
-      } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
-      const maxValue = Math.max(...rawData.flat(1)) + 1
+      const { rawData } = await this.glucoseService.getAll(this.dateRange[0], this.dateRange[1])
+      const maxValue = Math.max(...[11, Math.max(...rawData.map((x) => Number(x[1]))) + 1])
       const dataSets = [
         {
-          label: 'SD -1',
-          data: meanData.map((d, idx) => d - stdData[idx]),
-          fill: 0,
+          label: 'Reading',
+          data: rawData.map((d) => ({ x: moment(d[2]).format(DATETIME_FORMAT), y: d[1] })),
+          fill: false,
+          borderColor: singleMarkerColour,
+        },
+        {
+          label: 'Low',
+          data: rawData.map((d) => ({ x: d[2], y: 4 })),
+          fill: true,
           borderColor: warningColour,
         },
-        { label: 'Mean', data: meanData, fill: 1, borderColor: blackColour },
         {
-          label: 'SD +1',
-          data: meanData.map((d, idx) => d + stdData[idx]),
-          fill: 0,
+          label: 'Target',
+          data: rawData.map((d) => ({ x: d[2], y: 10 })),
+          fill: 1,
+          borderColor: inRangeColour,
+        },
+        {
+          label: 'High',
+          data: rawData.map((d) => ({ x: d[2], y: maxValue })),
+          fill: 2,
           borderColor: warningColour,
         },
       ]
@@ -129,14 +137,13 @@ export default {
           fill: d.fill,
           backgroundColor: d.borderColor,
           borderColor: d.borderColor,
-          borderWidth: 1,
-          pointRadius: 0,
-          data: d.data.map((d, index) => ({
-            x: moment(intervals[index], 'hh:mm'),
-            y: d,
-          })),
+          borderWidth: 2,
+          pointRadius: 1,
+          tension: 0.1,
+          hoverOffset: 4,
+          data: d.data,
         })),
-        labels: intervals.map((d) => moment(d, 'hh:mm')),
+        labels: rawData.map((d) => moment(d[2]).format(DATETIME_FORMAT)),
       }
       this.lineChartOptions = {
         ...this.lineChartOptions,

@@ -107,6 +107,12 @@ export default {
         icon: 'fas fa-stethoscope',
       },
       {
+        id: 4,
+        title: 'GlucoseTracker',
+        route: 'GlucoseTracker',
+        icon: 'fas fa-stethoscope',
+      },
+      {
         id: 5,
         title: 'MomentDashboard',
         route: 'MomentDashboard',
