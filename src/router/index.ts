@@ -21,9 +21,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('/@/views/Glucose.vue'),
       },
       {
-        path: 'Dashboard',
-        name: 'Dashboard',
-        component: () => import('/@/views/Dashboard.vue'),
+        path: 'MomentDashboard',
+        name: 'MomentDashboard',
+        component: () => import('/@/views/MomentDashboard.vue'),
       },
       {
         path: 'DailyDashboard',

@@ -108,14 +108,8 @@ export default {
       },
       {
         id: 5,
-        title: 'Dashboard',
-        route: 'Dashboard',
-        icon: 'fas fa-gauge',
-      },
-      {
-        id: 5,
-        title: 'Dashboard',
-        route: 'Dashboard',
+        title: 'MomentDashboard',
+        route: 'MomentDashboard',
         icon: 'fas fa-gauge',
       },
       {

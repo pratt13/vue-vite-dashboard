@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height>
-    <div class="text-h1 text-left">Daily Dashboard</div>
+    <div class="text-h1 text-left">Mean Values</div>
     <v-row no-gutters class="flex" align="center" justify="center">
       <v-col cols="8" align="center" justify="center" style="min-width: 1000px">
         <v-sheet class="pa-2 ma-2">
@@ -23,29 +23,32 @@
     </v-row>
   </v-container>
 </template>
-
 <script>
 import { defineAsyncComponent } from 'vue'
+import GlucoseService from '/@/services/glucose.ts'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
-import GlucoseService from '/@/services/glucose.ts'
-import { warningColour, blackColour, warningColourDark } from '/@/utils/constants.ts'
+import { warningColour, blackColour } from '/@/utils/constants.ts'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 
 const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
-
+const defaultMaxY = 18
 export default {
-  name: 'DailyDashboard',
+  name: 'MomentDashboard',
   components: {
     LineChart,
   },
   data() {
+    this.lineChartData = {
+      labels: [],
+      datasets: [],
+    }
     const defaultLineChartOptions = {
       scales: {
         y: {
           min: 0,
-          suggestedMax: 18,
+          suggestedMax: defaultMaxY,
         },
         x: {
           display: true,
@@ -53,13 +56,13 @@ export default {
           unit: 'hour',
           min: moment('00:00:01', 'hh:mm:ss'),
           max: moment('23:59:59', 'hh:mm:ss'),
-          title: {
-            display: true,
-            text: 'Time',
-          },
           ticks: {
             // forces step size to be 2 hours
             stepSize: 2,
+          },
+          title: {
+            display: true,
+            text: 'Time',
           },
         },
       },
@@ -99,25 +102,27 @@ export default {
       this.fetchDataFromAPI()
     },
     async fetchDataFromAPI() {
-      // Get data
       const {
-        median: medianData,
+        mean: meanData,
         raw: rawData,
         intervals,
-        q10: q10,
-        q25: q25,
-        q75: q75,
-        q90: q90,
+        std: stdData,
       } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
-
       const maxValue = Math.max(...rawData.flat(1)) + 1
-      // Fill the inner quartile darker
       const dataSets = [
-        { label: 'Q10 Quantile', data: q10, fill: 0, borderColor: warningColour },
-        { label: 'Q25 Quantile', data: q25, fill: false, borderColor: warningColourDark },
-        { label: 'Q75 Quantile', data: q75, fill: 1, borderColor: warningColourDark },
-        { label: 'Median', data: medianData, fill: false, borderColor: blackColour },
-        { label: 'Q90 Quantile', data: q90, fill: 0, borderColor: warningColour },
+        {
+          label: 'SD -1',
+          data: meanData.map((d, idx) => d - stdData[idx]),
+          fill: 0,
+          borderColor: warningColour,
+        },
+        { label: 'Mean', data: meanData, fill: 1, borderColor: blackColour },
+        {
+          label: 'SD +1',
+          data: meanData.map((d, idx) => d + stdData[idx]),
+          fill: 0,
+          borderColor: warningColour,
+        },
       ]
       this.lineChartData = {
         datasets: dataSets.map((d) => ({

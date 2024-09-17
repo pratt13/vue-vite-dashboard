@@ -36,7 +36,7 @@ const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue
 const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export default {
-  name: 'DailyDashboard',
+  name: 'LowDashboard',
   components: {
     LineChart,
   },
