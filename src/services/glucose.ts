@@ -10,15 +10,17 @@ export default class GlucoseService {
       .catch((err) => console.error(err))
   }
 
-  async getAggregateData(): Promise<GlucoseAggregateData> {
-    const response = await fetch('http://localhost:5000/glucose/aggregate/15min', {
-      method: 'GET',
-    })
+  async getAggregateData(startDate: string, endDate: string): Promise<GlucoseAggregateData> {
+    const response = await fetch(
+      `http://localhost:5000/glucose/aggregate/15min?start=${startDate}&end=${endDate}`,
+      {
+        method: 'GET',
+      },
+    )
     if (!response.ok) {
       throw new Error(response.statusText)
     }
     const res = await response.json()
-    console.log(res)
     return res
   }
 

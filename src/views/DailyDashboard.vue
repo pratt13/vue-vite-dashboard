@@ -11,6 +11,7 @@
         <v-sheet class="pa-2 ma-2">
           <v-date-input
             v-model="model"
+            @update:model-value="handleRange"
             label="Select range"
             multiple="range"
             color="primary"
@@ -25,9 +26,9 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import GlucoseService from '/@/services/glucose.ts'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
+import GlucoseService from '/@/services/glucose.ts'
 import { warningColour, blackColour, warningColourDark } from '/@/utils/constants.ts'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
@@ -41,7 +42,6 @@ export default {
   },
   data() {
     const defaultLineChartOptions = {
-      //showLine: false,
       scales: {
         y: {
           min: 0,
@@ -64,6 +64,8 @@ export default {
         },
       },
     }
+    const endOfToday = moment().endOf('day').format(DATETIME_FORMAT)
+    const startOfYear = moment().startOf('year').format(DATETIME_FORMAT)
     return {
       lineChartData: {
         labels: [],
@@ -71,8 +73,9 @@ export default {
       },
       lineChartOptions: defaultLineChartOptions,
       model: null,
-      maxDate: moment().endOf('day').format(DATETIME_FORMAT),
+      maxDate: endOfToday,
       glucoseService: new GlucoseService(),
+      dateRange: [startOfYear, endOfToday],
     }
   },
   created() {
@@ -80,6 +83,17 @@ export default {
     this.fetchDataFromAPI()
   },
   methods: {
+    handleRange(modelData) {
+      const dateValues = Object.values(modelData)
+      const startDate = dateValues[0]
+      const endDate = dateValues[dateValues.length]
+      this.dateRange = [
+        moment(startDate).format(DATETIME_FORMAT),
+        moment(endDate).format(DATETIME_FORMAT),
+      ]
+      // Re-fetch the data
+      this.fetchDataFromAPI()
+    },
     async fetchDataFromAPI() {
       // Get data
       const {
@@ -90,7 +104,7 @@ export default {
         q25: q25,
         q75: q75,
         q90: q90,
-      } = await this.glucoseService.getAggregateData()
+      } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
 
       const maxValue = Math.max(...rawData.flat(1)) + 1
       // Fill the inner quartile darker
@@ -116,10 +130,12 @@ export default {
         })),
         labels: intervals.map((d) => moment(d, 'hh:mm')),
       }
-      const def = this.lineChartOptions
       this.lineChartOptions = {
-        ...def,
-        scales: { ...def.scales, y: { ...def.scales.y, max: maxValue } },
+        ...this.lineChartOptions,
+        scales: {
+          ...this.lineChartOptions.scales,
+          y: { ...this.lineChartOptions.scales.y, max: maxValue },
+        },
       }
     },
   },
