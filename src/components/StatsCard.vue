@@ -1,6 +1,13 @@
 <template>
   <v-card class="mx-auto" max-width="368" variant="outlined">
-    <div class="text-h4">Summary</div>
+    <v-empty-state
+      height="500"
+      width="1000"
+      v-if="isLoading"
+      title="Loading..."
+      icon="fas fa-spinner"
+    ></v-empty-state>
+    <div v-else class="text-h4">Summary</div>
     <v-card-text class="py-0">
       <v-list>
         <v-list-item
@@ -23,6 +30,10 @@ export default {
     stats: {
       type: Array,
       default: () => [{ metric: 'No Stats', icon: 'fas fa-line-chart', value: '0' }],
+    },
+    isLoading: {
+      type: Boolean,
+      default: () => false,
     },
   },
 }

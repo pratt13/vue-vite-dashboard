@@ -35,3 +35,7 @@ export interface GlucoseTrackerData {
   rawData: [string, number][]
   metaData: GlucoseMetaData
 }
+
+export interface HBA1CRecords {
+  hBA1C: number
+}

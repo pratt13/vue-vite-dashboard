@@ -1,6 +1,19 @@
 <template>
   <v-card min-height="500" max-height="500" min-width="1000" max-width="1000" variant="outlined">
-    <Line :data="chartData" :options="chartOptions" />
+    <v-empty-state
+      v-if="failedToLoad && !isLoading"
+      headline="No Data"
+      text="No Data was returned"
+      icon="fas fa-circle-exclamation"
+    ></v-empty-state>
+    <v-empty-state
+      height="500"
+      width="1000"
+      v-if="isLoading"
+      title="Loading..."
+      icon="fas fa-spinner"
+    ></v-empty-state>
+    <Line v-if="!isLoading && !failedToLoad" :data="chartData" :options="chartOptions" />
   </v-card>
 </template>
 
@@ -16,11 +29,17 @@ export default {
       type: Object,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      default: () => false,
+    },
+    failedToLoad: {
+      type: Boolean,
+      default: () => false,
+    },
     chartOptions: {
       type: Object,
-      default: () => {
-        backgroundColor: rgb(0, 0, 0)
-      },
+      default: () => {},
     },
   },
 }

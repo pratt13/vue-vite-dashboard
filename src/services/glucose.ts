@@ -3,6 +3,7 @@ import {
   GlucoseMedianData,
   GlucoseRecords,
   GlucoseTrackerData,
+  HBA1CRecords,
 } from '../utils/interface'
 
 export default class GlucoseService {
@@ -52,5 +53,19 @@ export default class GlucoseService {
     }
     const glucoseMedianData: GlucoseMedianData = await response.json()
     return glucoseMedianData
+  }
+
+  async getHBA1C(startDate: string, endDate: string): Promise<HBA1CRecords> {
+    return await fetch(`http://localhost:5000/glucose/hba1c?start=${startDate}&end=${endDate}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((glucoseData: HBA1CRecords) => glucoseData)
+      .catch((err) => {
+        console.error(err)
+        // TODO: Notistack
+        // Return empty to enable No data rendering
+        return {} as HBA1CRecords
+      })
   }
 }
