@@ -110,7 +110,7 @@ export default {
         id: 4,
         title: 'GlucoseTracker',
         route: 'GlucoseTracker',
-        icon: 'fas fa-stethoscope',
+        icon: 'fas fa-chart-line',
       },
       {
         id: 5,
@@ -122,6 +122,12 @@ export default {
         id: 6,
         title: 'Daily Dashboard',
         route: 'DailyDashboard',
+        icon: 'fas fa-gauge',
+      },
+      {
+        id: 7,
+        title: 'Low Dashboard',
+        route: 'LowDashboard',
         icon: 'fas fa-gauge',
       },
     ],

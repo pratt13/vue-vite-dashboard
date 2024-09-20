@@ -1,10 +1,10 @@
 <template>
   <v-container fluid fill-height>
-    <div class="text-h1 text-left">Daily Dashboard</div>
+    <div class="text-h1 text-left">Low Dashboard</div>
     <v-row no-gutters class="flex" align="center" justify="center">
       <v-col cols="8" align="center" justify="center" style="min-width: 1000px">
         <v-sheet class="pa-2 ma-2">
-          <LineChart :chartData="lineChartData" :chartOptions="lineChartOptions" />
+          <BarChart :chartData="lowBarChartData" :chartOptions="lowBarChartOptions" />
         </v-sheet>
       </v-col>
       <v-col cols="2" style="min-width: 350px; min-height: 200px">
@@ -19,6 +19,17 @@
             :max="maxDate"
           ></v-date-input>
         </v-sheet>
+        <v-sheet>
+          <v-container fluid>
+            <p>Time Bucket: {{ radios }}</p>
+            <v-radio-group v-model="radios" @update:model-value="handleBucket">
+              <v-radio label="15 Minute" value="15min"></v-radio>
+              <v-radio label="30 Minute" value="30min"></v-radio>
+              <v-radio label="1 Hour" value="60min"></v-radio>
+              <v-radio label="2 Hour" value="120min"></v-radio>
+            </v-radio-group>
+          </v-container>
+        </v-sheet>
       </v-col>
     </v-row>
   </v-container>
@@ -29,53 +40,44 @@ import { defineAsyncComponent } from 'vue'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
 import GlucoseService from '/@/services/glucose.ts'
-import { warningColour, blackColour, warningColourDark } from '/@/utils/constants.ts'
+import { DATETIME_FORMAT } from '/@/utils/constants.ts'
 
-const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
-
-const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 
 export default {
   name: 'LowDashboard',
   components: {
-    LineChart,
+    BarChart,
   },
   data() {
-    const defaultLineChartOptions = {
-      scales: {
-        y: {
-          min: 0,
-          suggestedMax: 18,
-        },
-        x: {
-          display: true,
-          type: 'time',
-          unit: 'hour',
-          min: moment('00:00:01', 'hh:mm:ss'),
-          max: moment('23:59:59', 'hh:mm:ss'),
-          title: {
-            display: true,
-            text: 'Time',
-          },
-          ticks: {
-            // forces step size to be 2 hours
-            stepSize: 2,
-          },
-        },
-      },
-    }
     const endOfToday = moment().endOf('day').format(DATETIME_FORMAT)
     const startOfYear = moment().startOf('year').format(DATETIME_FORMAT)
     return {
-      lineChartData: {
+      lowBarChartData: {
         labels: [],
         datasets: [],
       },
-      lineChartOptions: defaultLineChartOptions,
+      lowBarChartOptions: {
+        responsive: true,
+        // scales: {
+        //   x: {
+
+        //   type: 'time',
+        //   unit: 'hour',
+        //   min: moment('00:00:00', 'hh:mm:ss'),
+        //   max: moment('23:59:59', 'hh:mm:ss'),
+        //   },
+        //   title: {
+        //     display: true,
+        //     text: 'Time',
+        //   },
+        // }
+      },
       model: null,
       maxDate: endOfToday,
       glucoseService: new GlucoseService(),
       dateRange: [startOfYear, endOfToday],
+      radios: '1hour',
     }
   },
   created() {
@@ -84,7 +86,6 @@ export default {
       0: moment().startOf('year').format(DATETIME_FORMAT),
       1: moment().endOf('year').format(DATETIME_FORMAT),
     })
-    this.fetchDataFromAPI()
   },
   methods: {
     handleRange(modelData) {
@@ -96,50 +97,34 @@ export default {
         moment(endDate).format(DATETIME_FORMAT),
       ]
       // Re-fetch the data
-      this.fetchDataFromAPI()
+      this.fetchPercentageDataFromAPI()
     },
-    async fetchDataFromAPI() {
+    handleBucket(radioValue) {
+      console.log(this.radios)
+      this.radios = radioValue
+      console.log(this.radios)
+      // Re-fetch the data
+      this.fetchPercentageDataFromAPI()
+    },
+    async fetchPercentageDataFromAPI() {
       // Get data
-      const {
-        median: medianData,
-        raw: rawData,
-        intervals,
-        q10: q10,
-        q25: q25,
-        q75: q75,
-        q90: q90,
-      } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
+      console.log(this.dateRange[0], this.dateRange[1], this.radios)
+      const data = await this.glucoseService.getGlucosePercentagesGroupedByDay(
+        this.dateRange[0],
+        this.dateRange[1],
+        this.radios,
+      )
+      const timeInterval = data.map((d) => d.timeInterval)
+      const timeIntervalData = data.map((d) => d.timeIntervalData)
 
-      const maxValue = Math.max(...rawData.flat(1)) + 1
-      // Fill the inner quartile darker
-      const dataSets = [
-        { label: 'Q10 Quantile', data: q10, fill: 0, borderColor: warningColour },
-        { label: 'Q25 Quantile', data: q25, fill: false, borderColor: warningColourDark },
-        { label: 'Q75 Quantile', data: q75, fill: 1, borderColor: warningColourDark },
-        { label: 'Median', data: medianData, fill: false, borderColor: blackColour },
-        { label: 'Q90 Quantile', data: q90, fill: 0, borderColor: warningColour },
-      ]
-      this.lineChartData = {
-        datasets: dataSets.map((d) => ({
-          label: d.label,
-          fill: d.fill,
-          backgroundColor: d.borderColor,
-          borderColor: d.borderColor,
-          borderWidth: 1,
-          pointRadius: 0,
-          data: d.data.map((d, index) => ({
-            x: moment(intervals[index], 'hh:mm'),
-            y: d,
-          })),
-        })),
-        labels: intervals.map((d) => moment(d, 'hh:mm')),
-      }
-      this.lineChartOptions = {
-        ...this.lineChartOptions,
-        scales: {
-          ...this.lineChartOptions.scales,
-          y: { ...this.lineChartOptions.scales.y, max: maxValue },
-        },
+      this.lowBarChartData = {
+        labels: timeInterval,
+        datasets: [
+          {
+            label: 'Glucose Counts',
+            data: timeIntervalData.map((d) => d.numberOfLows),
+          },
+        ],
       }
     },
   },

@@ -54,7 +54,7 @@ export default {
           display: true,
           type: 'time',
           unit: 'hour',
-          min: moment('00:00:01', 'hh:mm:ss'),
+          min: moment('00:00:00', 'hh:mm:ss'),
           max: moment('23:59:59', 'hh:mm:ss'),
           title: {
             display: true,
@@ -113,7 +113,7 @@ export default {
         q90: q90,
       } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
 
-      const maxValue = Math.max(...rawData.flat(1)) + 1
+      const maxValue = Math.round(Math.max(...rawData.flat(1)) + 1)
       // Fill the inner quartile darker
       const dataSets = [
         { label: 'Q10 Quantile', data: q10, fill: 0, borderColor: warningColour },

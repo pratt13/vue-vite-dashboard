@@ -39,3 +39,16 @@ export interface GlucoseTrackerData {
 export interface HBA1CRecords {
   hBA1C: number
 }
+
+export interface GlucoseIntervalPercentageRecords {
+  timeInterval: string
+  timeIntervalData: GlucosePercentages
+}
+
+export interface GlucosePercentages {
+  numberOfHighs: number
+  numberOfLows: number
+  percentHighSeconds: number
+  percentInTargetSeconds: number
+  percentLowSeconds: number
+}

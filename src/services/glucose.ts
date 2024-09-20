@@ -1,5 +1,6 @@
 import {
   GlucoseAggregateData,
+  GlucoseIntervalPercentageRecords,
   GlucoseMedianData,
   GlucoseRecords,
   GlucoseTrackerData,
@@ -7,8 +8,8 @@ import {
 } from '../utils/interface'
 
 export default class GlucoseService {
-  async getAll(): Promise<GlucoseRecords> {
-    return await fetch('http://localhost:5000/glucose', {
+  async getAll(startDate: string, endDate: string): Promise<GlucoseRecords> {
+    return await fetch(`http://localhost:5000/glucose?start=${startDate}&end=${endDate}`, {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -66,6 +67,47 @@ export default class GlucoseService {
         // TODO: Notistack
         // Return empty to enable No data rendering
         return {} as HBA1CRecords
+      })
+  }
+
+  async getGlucosePercentages(
+    startDate: string,
+    endDate: string,
+  ): Promise<GlucoseIntervalPercentageRecords[]> {
+    return await fetch(
+      `http://localhost:5000/glucose/percentage?start=${startDate}&end=${endDate}`,
+      {
+        method: 'GET',
+      },
+    )
+      .then((response) => response.json())
+      .then((glucoseData: GlucoseIntervalPercentageRecords[]) => glucoseData)
+      .catch((err) => {
+        console.error(err)
+        // TODO: Notistack
+        // Return empty to enable No data rendering
+        return [{} as GlucoseIntervalPercentageRecords]
+      })
+  }
+
+  async getGlucosePercentagesGroupedByDay(
+    startDate: string,
+    endDate: string,
+    bucket: string,
+  ): Promise<GlucoseIntervalPercentageRecords[]> {
+    return await fetch(
+      `http://localhost:5000/glucose/percentage/day?start=${startDate}&end=${endDate}&bucket=${bucket}`,
+      {
+        method: 'GET',
+      },
+    )
+      .then((response) => response.json())
+      .then((glucoseData: GlucoseIntervalPercentageRecords[]) => glucoseData)
+      .catch((err) => {
+        console.error(err)
+        // TODO: Notistack
+        // Return empty to enable No data rendering
+        return [{} as GlucoseIntervalPercentageRecords]
       })
   }
 }

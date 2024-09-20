@@ -107,7 +107,7 @@ export default {
         intervals,
         std: stdData,
       } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
-      const maxValue = Math.max(...rawData.flat(1)) + 1
+      const maxValue = Math.round(Math.max(...rawData.flat(1)) + 1)
       const dataSets = [
         {
           label: 'SD -1',

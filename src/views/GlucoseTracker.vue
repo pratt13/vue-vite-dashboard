@@ -105,12 +105,14 @@ export default {
   methods: {
     handleRange(modelData) {
       const dateValues = Object.values(modelData)
+      console.log(dateValues)
       const startDate = dateValues[0]
       const endDate = dateValues[dateValues.length]
       this.dateRange = [
         moment(startDate).format(DATETIME_FORMAT),
         moment(endDate).format(DATETIME_FORMAT),
       ]
+      console.log(this.dateRange)
       // Re-fetch the data
       this.fetchHBA1CDataFromAPI()
       this.fetchTrackerDataFromAPI()
@@ -124,6 +126,7 @@ export default {
       // Set that it is loaded to true if it has data
       this.isLoading = false
       this.failedToLoad = false
+      const { startDate, endDate } = this.dateRange
 
       // Construct chart data
       const maxValue = Math.round(
@@ -178,6 +181,7 @@ export default {
         scales: {
           ...this.lineChartOptions.scales,
           y: { ...this.lineChartOptions.scales.y, max: maxValue },
+          x: { ...this.lineChartOptions.scales.x, min: startDate, max: endDate },
         },
       }
     },
