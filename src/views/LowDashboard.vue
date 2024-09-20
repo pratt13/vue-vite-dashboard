@@ -77,7 +77,7 @@ export default {
       maxDate: endOfToday,
       glucoseService: new GlucoseService(),
       dateRange: [startOfYear, endOfToday],
-      radios: '1hour',
+      radios: '60min',
     }
   },
   created() {
