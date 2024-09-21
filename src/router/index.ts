@@ -31,14 +31,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('/@/views/MomentDashboard.vue'),
       },
       {
-        path: 'DailyDashboard',
-        name: 'DailyDashboard',
-        component: () => import('/@/views/DailyDashboard.vue'),
+        path: 'DailyTrends',
+        name: 'DailyTrends',
+        component: () => import('/@/views/DailyTrends.vue'),
       },
       {
         path: 'LowDashboard',
         name: 'LowDashboard',
         component: () => import('/@/views/LowDashboard.vue'),
+      },
+      {
+        path: 'LowTrends',
+        name: 'LowTrends',
+        component: () => import('/@/views/LowTrends.vue'),
       },
       {
         path: 'Exercise',

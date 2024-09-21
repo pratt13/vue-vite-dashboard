@@ -112,7 +112,6 @@ export default {
         moment(startDate).format(DATETIME_FORMAT),
         moment(endDate).format(DATETIME_FORMAT),
       ]
-      console.log(this.dateRange)
       // Re-fetch the data
       this.fetchHBA1CDataFromAPI()
       this.fetchTrackerDataFromAPI()
@@ -120,6 +119,7 @@ export default {
     async fetchTrackerDataFromAPI() {
       const { rawData } = await this.glucoseService.getAll(this.dateRange[0], this.dateRange[1])
       if (rawData.length == 0) {
+        this.isLoading = false
         this.failedToLoad = true
         return
       }

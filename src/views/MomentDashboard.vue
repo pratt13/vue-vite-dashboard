@@ -101,24 +101,20 @@ export default {
       this.fetchDataFromAPI()
     },
     async fetchDataFromAPI() {
-      const {
-        mean: meanData,
-        raw: rawData,
-        intervals,
-        std: stdData,
-      } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
-      const maxValue = Math.round(Math.max(...rawData.flat(1)) + 1)
+      const { meanValues, maxValues, intervals, stdValues } =
+        await this.glucoseService.getMomentData(this.dateRange[0], this.dateRange[1])
+      const maxValue = Math.round(Math.max(...maxValues.flat(1)) + 1)
       const dataSets = [
         {
           label: 'SD -1',
-          data: meanData.map((d, idx) => d - stdData[idx]),
+          data: meanValues.map((d, idx) => d - stdValues[idx]),
           fill: 0,
           borderColor: warningColour,
         },
-        { label: 'Mean', data: meanData, fill: 1, borderColor: blackColour },
+        { label: 'Mean', data: meanValues, fill: 1, borderColor: blackColour },
         {
           label: 'SD +1',
-          data: meanData.map((d, idx) => d + stdData[idx]),
+          data: meanValues.map((d, idx) => d + stdValues[idx]),
           fill: 0,
           borderColor: warningColour,
         },

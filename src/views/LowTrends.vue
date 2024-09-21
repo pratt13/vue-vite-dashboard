@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height>
-    <div class="text-h1 text-left">Low Dashboard</div>
+    <div class="text-h1 text-left">Low Trends</div>
     <v-row no-gutters class="flex" align="center" justify="center">
       <v-col cols="8" align="center" justify="center" style="min-width: 1000px">
         <v-sheet class="pa-2 ma-2">
@@ -45,7 +45,7 @@ import { DATETIME_FORMAT } from '/@/utils/constants.ts'
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
 
 export default {
-  name: 'LowDashboard',
+  name: 'LowTrends',
   components: {
     BarChart,
   },
@@ -118,8 +118,8 @@ export default {
         labels: timeInterval,
         datasets: [
           {
-            label: 'Low events',
-            data: timeIntervalData.map((d) => d.numberOfLows),
+            label: 'Percentage of time Lows',
+            data: timeIntervalData.map((d) => d.percentageOfTimeLow),
           },
         ],
       }

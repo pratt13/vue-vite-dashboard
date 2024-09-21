@@ -1,11 +1,23 @@
 export interface GlucoseMedianData {
-  median: number[]
+  intervals: string[]
+  medianValues: number[]
   q10: number[]
   q25: number[]
   q75: number[]
   q90: number[]
+  minValues: number[]
+  maxValues: number[]
 }
 
+export interface GlcuoseMomentData {
+  intervals: string[]
+  meanValues: number[]
+  numRecords: number[]
+  varValues: number[]
+  stdValues: number[]
+  maxValues: number[]
+  minValues: number[]
+}
 export interface GlucoseAggregateData extends GlucoseMedianData {
   raw: [string, number][]
   count: number[]
@@ -48,7 +60,7 @@ export interface GlucoseIntervalPercentageRecords {
 export interface GlucosePercentages {
   numberOfHighs: number
   numberOfLows: number
-  percentHighSeconds: number
-  percentInTargetSeconds: number
-  percentLowSeconds: number
+  percentageOfTimeHigh: number
+  percentageOfTimeInTarget: number
+  percentageOfTimeLow: number
 }

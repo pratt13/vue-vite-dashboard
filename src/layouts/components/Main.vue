@@ -120,14 +120,20 @@ export default {
       },
       {
         id: 6,
-        title: 'Daily Dashboard',
-        route: 'DailyDashboard',
+        title: 'Daily Trends',
+        route: 'DailyTrends',
         icon: 'fas fa-gauge',
       },
       {
         id: 7,
         title: 'Low Dashboard',
         route: 'LowDashboard',
+        icon: 'fas fa-gauge',
+      },
+      {
+        id: 7,
+        title: 'Low Trends',
+        route: 'LowTrends',
         icon: 'fas fa-gauge',
       },
     ],

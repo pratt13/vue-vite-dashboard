@@ -1,4 +1,5 @@
 import {
+  GlcuoseMomentData,
   GlucoseAggregateData,
   GlucoseIntervalPercentageRecords,
   GlucoseMedianData,
@@ -29,6 +30,30 @@ export default class GlucoseService {
       .then((response) => response.json())
       .then((glucoseData) => glucoseData)
       .catch((err) => console.error(err))
+  }
+
+  async getQuartileData(startDate: string, endDate: string): Promise<GlucoseMedianData> {
+    return await fetch(`http://localhost:5000/glucose/quartile?start=${startDate}&end=${endDate}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((glucoseData) => glucoseData)
+      .catch((err) => {
+        console.error(err)
+        return {} as GlucoseMedianData
+      })
+  }
+
+  async getMomentData(startDate: string, endDate: string): Promise<GlcuoseMomentData> {
+    return await fetch(`http://localhost:5000/glucose/moments?start=${startDate}&end=${endDate}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((glucoseData) => glucoseData)
+      .catch((err) => {
+        console.error(err)
+        return {} as GlcuoseMomentData
+      })
   }
 
   async getAggregateData(startDate: string, endDate: string): Promise<GlucoseAggregateData> {

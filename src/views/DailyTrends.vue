@@ -39,7 +39,7 @@ import {
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 
 export default {
-  name: 'DailyDashboard',
+  name: 'DailyTrends',
   components: {
     LineChart,
   },
@@ -104,22 +104,22 @@ export default {
     async fetchDataFromAPI() {
       // Get data
       const {
-        median: medianData,
-        raw: rawData,
+        medianValues,
+        maxValues,
         intervals,
         q10: q10,
         q25: q25,
         q75: q75,
         q90: q90,
-      } = await this.glucoseService.getAggregateData(this.dateRange[0], this.dateRange[1])
+      } = await this.glucoseService.getQuartileData(this.dateRange[0], this.dateRange[1])
 
-      const maxValue = Math.round(Math.max(...rawData.flat(1)) + 1)
+      const maxValue = Math.round(Math.max(...maxValues.flat(1)) + 1)
       // Fill the inner quartile darker
       const dataSets = [
         { label: 'Q10 Quantile', data: q10, fill: 0, borderColor: warningColour },
         { label: 'Q25 Quantile', data: q25, fill: false, borderColor: warningColourDark },
         { label: 'Q75 Quantile', data: q75, fill: 1, borderColor: warningColourDark },
-        { label: 'Median', data: medianData, fill: false, borderColor: blackColour },
+        { label: 'Median', data: medianValues, fill: false, borderColor: blackColour },
         { label: 'Q90 Quantile', data: q90, fill: 0, borderColor: warningColour },
       ]
       this.lineChartData = {
