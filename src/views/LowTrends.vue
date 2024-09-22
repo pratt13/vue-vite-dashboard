@@ -118,7 +118,7 @@ export default {
         labels: timeInterval,
         datasets: [
           {
-            label: 'Percentage of time Lows',
+            label: 'Percentage of time Low',
             data: timeIntervalData.map((d) => d.percentageOfTimeLow),
           },
         ],
