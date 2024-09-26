@@ -26,14 +26,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('/@/views/GlucoseTracker.vue'),
       },
       {
-        path: 'MomentDashboard',
-        name: 'MomentDashboard',
-        component: () => import('/@/views/MomentDashboard.vue'),
+        path: 'DayTracker',
+        name: 'DayTracker',
+        component: () => import('/@/views/DayTracker.vue'),
       },
       {
         path: 'DailyTrends',
         name: 'DailyTrends',
         component: () => import('/@/views/DailyTrends.vue'),
+      },
+      {
+        path: 'DayTracker',
+        name: 'DayTracker',
+        component: () => import('/@/views/DayTracker.vue'),
       },
       {
         path: 'LowDashboard',

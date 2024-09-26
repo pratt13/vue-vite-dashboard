@@ -114,8 +114,8 @@ export default {
       },
       {
         id: 5,
-        title: 'MomentDashboard',
-        route: 'MomentDashboard',
+        title: 'DayTracker',
+        route: 'DayTracker',
         icon: 'fas fa-gauge',
       },
       {

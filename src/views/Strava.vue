@@ -54,6 +54,8 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import moment from 'moment'
 import { BACKGROUND_COLOURS, BORDER_COLOURS } from '/@/utils/constants'
+import { formatString } from '/@/utils/helpers'
+import StravaService from '/@/services/strava.ts'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const BarChart = defineAsyncComponent(() => import('/@/components/BarChart.vue'))
@@ -69,10 +71,6 @@ export default {
     StatsCard,
   },
   data() {
-    this.lineChartData = {
-      labels: [],
-      datasets: [],
-    }
     this.lineChartOptions = {
       responsive: true,
       showLine: true,
@@ -94,6 +92,12 @@ export default {
           type: 'time',
           time: {
             unit: 'day',
+            step: 5,
+          },
+          unit: 'day',
+          ticks: {
+            // forces step size to be 2 hours
+            stepSize: 2,
           },
           title: {
             display: true,
@@ -101,14 +105,6 @@ export default {
           },
         },
       },
-    }
-    this.countBarChartData = {
-      labels: [],
-      datasets: [],
-    }
-    this.distanceBarChartData = {
-      labels: [],
-      datasets: [],
     }
     this.countBarChartOptions = {
       responsive: true,
@@ -146,100 +142,111 @@ export default {
         },
       },
     }
-    this.statsData = []
     return {
-      lineChartData: this.lineChartData,
+      lineChartData: {
+        labels: [],
+        datasets: [],
+      },
       lineChartOptions: this.lineChartOptions,
-      countBarChartData: this.countBarChartData,
-      distanceBarChartData: this.distanceBarChartData,
+      countBarChartData: {
+        labels: [],
+        datasets: [],
+      },
+      distanceBarChartData: {
+        labels: [],
+        datasets: [],
+      },
       distanceBarChartOptions: this.distanceBarChartOptions,
       countBarChartOptions: this.countBarChartOptions,
       month: moment().startOf('month').format(DATE_FORMAT),
-      statsData: this.statsData,
+      endDate: moment().startOf('month').format(DATE_FORMAT),
+      statsData: [],
+      stravaService: new StravaService(),
     }
   },
   mounted() {
     this.fetchDataFromAPI()
   },
   methods: {
-    fetchDataFromAPI() {
-      // This is dirty
-      const endDate = moment(this.month).endOf('month').format(DATE_FORMAT)
-      const url = `http://localhost:5000/strava/summary?start=${this.month}&end=${endDate}`
-      // Strava data
-      fetch(url, {
-        method: 'GET',
-      })
-        .then((response) => response.json())
-        .then((stravaData) => {
-          // Get the different activity types
-          const activity_types = Object.keys(stravaData.meta_data)
-          // For each activity type create the data
-          this.lineChartData = {
-            labels: stravaData.timestamped_data.map((d) => d[0]),
-            datasets: activity_types.map((a_type, idx) => ({
-              label: a_type,
-              fill: false,
-              borderColor: BORDER_COLOURS[idx],
-              backgroundColor: BACKGROUND_COLOURS[idx],
-              borderWidth: 1,
-              pointRadius: 3,
-              data: stravaData.timestamped_data
-                .filter((d) => d[1] == a_type)
-                .map((d) => ({ x: d[0], y: d[2] })),
-            })),
-          }
-          this.countBarChartData = {
-            labels: activity_types,
-            datasets: [
-              {
-                label: 'Activity Count',
-                data: activity_types.map((t) => stravaData.meta_data[t].number_activities),
-                borderWidth: 1,
-              },
-            ],
-          }
-          this.distanceBarChartData = {
-            labels: activity_types,
-            datasets: [
-              {
-                label: 'Activity Distance',
-                data: activity_types.map((t) => stravaData.meta_data[t].distance),
-                borderWidth: 1,
-              },
-            ],
-          }
-
-          this.statsData = [
-            {
-              metric: 'Activities',
-              icon: 'fas fa-person-running',
-              value: activity_types
-                .map((t) => stravaData.meta_data[t].number_activities)
-                .reduce((partialSum, a) => partialSum + a, 0),
-            },
-            {
-              metric: 'Types of Activities',
-              icon: 'fas fa-medal',
-              value: activity_types.length,
-            },
-            {
-              metric: 'Distance',
-              icon: 'fas fa-shoe-prints',
-              value: `${activity_types.map((t) => stravaData.meta_data[t].distance).reduce((partialSum, a) => partialSum + a, 0)}m`,
-            },
-          ]
-        })
-        .catch((e) => {
-          console.log('*******Error**********')
-          console.log(e)
-        })
-    },
-    handleDate(modelData) {
+    handleDate(date) {
       // Month picker event
-      this.month = moment(modelData).format(DATE_FORMAT)
+      this.month = moment(date).startOf('month').format(DATE_FORMAT)
       // Re-fetch the data
       this.fetchDataFromAPI()
+    },
+    async fetchDataFromAPI() {
+      const data = await this.stravaService.getData(
+        moment(this.month).startOf('month').format(DATE_FORMAT),
+        moment(this.month).endOf('month').format(DATE_FORMAT),
+      )
+      const activities = Object.keys(data)
+
+      // For each activity type create the data
+      this.lineChartData = {
+        datasets: activities.map((activity, idx) => ({
+          label: formatString(activity),
+          fill: false,
+          borderColor: BORDER_COLOURS[idx],
+          backgroundColor: BACKGROUND_COLOURS[idx],
+          borderWidth: 1,
+          pointRadius: 3,
+          data: data[activity].timestampData.map((d) => ({ x: d.timestamp, y: d.totalDistance })),
+        })),
+      }
+      this.lineChartOptions = {
+        ...this.lineChartOptions,
+        scales: {
+          ...this.lineChartOptions.scales,
+          x: {
+            ...this.lineChartOptions.scales.x,
+
+            min: moment(this.month).startOf('month'),
+            max: moment(this.month).endOf('month'),
+          },
+        },
+      }
+      this.countBarChartData = {
+        labels: activities.map((activity) => formatString(activity)),
+        datasets: [
+          {
+            label: 'Activity Count',
+            data: activities.map((activity) => data[activity].count),
+            borderWidth: 1,
+          },
+        ],
+      }
+      this.distanceBarChartData = {
+        labels: activities.map((activity) => formatString(activity)),
+        datasets: [
+          {
+            label: 'Activity Distance',
+            data: activities.map((activity) =>
+              Math.max(...data[activity].timestampData.map((d) => d.totalDistance)),
+            ),
+            borderWidth: 1,
+          },
+        ],
+      }
+
+      this.statsData = [
+        {
+          metric: 'Activities',
+          icon: 'fas fa-person-running',
+          value: activities
+            .map((activity) => data[activity].count)
+            .reduce((partialSum, a) => partialSum + a, 0),
+        },
+        {
+          metric: 'Types of Activities',
+          icon: 'fas fa-medal',
+          value: activities.length,
+        },
+        {
+          metric: 'Distance',
+          icon: 'fas fa-shoe-prints',
+          value: `${activities.map((activity) => Math.max(...data[activity].timestampData.map((d) => d.totalDistance))).reduce((partialSum, a) => partialSum + a, 0)}m`,
+        },
+      ]
     },
   },
 }

@@ -1,10 +1,10 @@
 import {
   GlcuoseMomentData,
   GlucoseAggregateData,
+  GlucoseDayData,
   GlucoseIntervalPercentageRecords,
   GlucoseMedianData,
   GlucoseRecords,
-  GlucoseTrackerData,
   HBA1CRecords,
 } from '../utils/interface'
 
@@ -23,13 +23,18 @@ export default class GlucoseService {
       })
   }
 
-  async getMetaData(): Promise<GlucoseTrackerData> {
-    return await fetch('http://localhost:5000/glucose/meta', {
+  async getDayData(startDate: string, endDate: string): Promise<GlucoseDayData> {
+    return await fetch(`http://localhost:5000/glucose/days?start=${startDate}&end=${endDate}`, {
       method: 'GET',
     })
       .then((response) => response.json())
-      .then((glucoseData) => glucoseData)
-      .catch((err) => console.error(err))
+      .then((glucoseData: GlucoseDayData) => glucoseData)
+      .catch((err) => {
+        console.error(err)
+        // TODO: Notistack
+        // Return empty to enable No data rendering
+        return {} as GlucoseDayData
+      })
   }
 
   async getQuartileData(startDate: string, endDate: string): Promise<GlucoseMedianData> {

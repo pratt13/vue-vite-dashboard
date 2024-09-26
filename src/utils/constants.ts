@@ -25,5 +25,6 @@ export const inRangeColour = 'rgba(221, 255, 211, 0.4)'
 export const singleMarkerColour = 'rgb(251, 8, 162)'
 
 export const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
-
+export const DATE_FORMAT = 'YYYY-MM-DD'
+export const TIME_FORMAT = 'HH:mm:ss'
 export const defaultMaxGlucose = 18

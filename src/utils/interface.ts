@@ -43,6 +43,10 @@ export interface GlucoseRecords {
   rawData: [string, number][]
 }
 
+export interface GlucoseDayData {
+  [key: string]: [string, number][]
+}
+
 export interface GlucoseTrackerData {
   rawData: [string, number][]
   metaData: GlucoseMetaData
@@ -63,4 +67,18 @@ export interface GlucosePercentages {
   percentageOfTimeHigh: number
   percentageOfTimeInTarget: number
   percentageOfTimeLow: number
+}
+
+export interface StravaData {
+  [key: string]: StravaTimestampData
+}
+
+export interface StravaTimestampData {
+  timestampData: StravaTimestampRecord[]
+  count: number
+}
+export interface StravaTimestampRecord {
+  timestamp: string
+  distance: number
+  totalDistance: number
 }
