@@ -9,15 +9,6 @@ export interface GlucoseMedianData {
   maxValues: number[]
 }
 
-export interface GlcuoseMomentData {
-  intervals: string[]
-  meanValues: number[]
-  numRecords: number[]
-  varValues: number[]
-  stdValues: number[]
-  maxValues: number[]
-  minValues: number[]
-}
 export interface GlucoseAggregateData extends GlucoseMedianData {
   raw: [string, number][]
   count: number[]
@@ -39,8 +30,9 @@ export interface GlucoseMetaData {
   stDev: number
 }
 
-export interface GlucoseRecords {
-  rawData: [string, number][]
+export interface GlucoseRecord {
+  timestamp: string
+  glucose: number
 }
 
 export interface GlucoseDayData {

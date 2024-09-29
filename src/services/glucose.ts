@@ -1,25 +1,24 @@
 import {
-  GlcuoseMomentData,
   GlucoseAggregateData,
   GlucoseDayData,
   GlucoseIntervalPercentageRecords,
   GlucoseMedianData,
-  GlucoseRecords,
+  GlucoseRecord,
   HBA1CRecords,
 } from '../utils/interface'
 
 export default class GlucoseService {
-  async getAll(startDate: string, endDate: string): Promise<GlucoseRecords> {
+  async getAll(startDate: string, endDate: string): Promise<GlucoseRecord[]> {
     return await fetch(`http://localhost:5000/glucose?start=${startDate}&end=${endDate}`, {
       method: 'GET',
     })
       .then((response) => response.json())
-      .then((glucoseData: [string, number][]) => ({ rawData: glucoseData }))
+      .then((glucoseData: GlucoseRecord[]) => glucoseData)
       .catch((err) => {
         console.error(err)
         // TODO: Notistack
         // Return empty to enable No data rendering
-        return { rawData: [] } as GlucoseRecords
+        return [] as GlucoseRecord[]
       })
   }
 
@@ -46,18 +45,6 @@ export default class GlucoseService {
       .catch((err) => {
         console.error(err)
         return {} as GlucoseMedianData
-      })
-  }
-
-  async getMomentData(startDate: string, endDate: string): Promise<GlcuoseMomentData> {
-    return await fetch(`http://localhost:5000/glucose/moments?start=${startDate}&end=${endDate}`, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((glucoseData) => glucoseData)
-      .catch((err) => {
-        console.error(err)
-        return {} as GlcuoseMomentData
       })
   }
 

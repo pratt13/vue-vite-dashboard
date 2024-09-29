@@ -43,6 +43,7 @@ import {
   defaultMaxGlucose,
   singleMarkerColour,
 } from '/@/utils/constants.ts'
+// import { GlucoseRecord } from '/@/utils/interface'
 
 const LineChart = defineAsyncComponent(() => import('/@/components/LineChart.vue'))
 const StatsCard = defineAsyncComponent(() => import('/@/components/StatsCard.vue'))
@@ -105,7 +106,6 @@ export default {
   methods: {
     handleRange(modelData) {
       const dateValues = Object.values(modelData)
-      console.log(dateValues)
       const startDate = dateValues[0]
       const endDate = dateValues[dateValues.length]
       this.dateRange = [
@@ -117,8 +117,8 @@ export default {
       this.fetchTrackerDataFromAPI()
     },
     async fetchTrackerDataFromAPI() {
-      const { rawData } = await this.glucoseService.getAll(this.dateRange[0], this.dateRange[1])
-      if (rawData.length == 0) {
+      const glucoseData = await this.glucoseService.getAll(this.dateRange[0], this.dateRange[1])
+      if (glucoseData.length == 0) {
         this.isLoading = false
         this.failedToLoad = true
         return
@@ -130,33 +130,36 @@ export default {
 
       // Construct chart data
       const maxValue = Math.round(
-        Math.max(...[11, Math.max(...rawData.map((x) => Number(x[1]))) + 1]),
+        Math.max(...[11, Math.max(...glucoseData.map((x) => Number(x.glucose))) + 1]),
       )
       const dataSets = [
         {
           label: 'Reading',
-          data: rawData.map((d) => ({ x: moment(d[2]).format(DATETIME_FORMAT), y: d[1] })),
+          data: glucoseData.map((d) => ({
+            x: moment(d.timestamp).format(DATETIME_FORMAT),
+            y: d.glucose,
+          })),
           fill: false,
           borderColor: singleMarkerColour,
           pointRadius: 1,
         },
         {
           label: 'Low',
-          data: rawData.map((d) => ({ x: d[2], y: 4 })),
+          data: glucoseData.map((d) => ({ x: d.timestamp, y: 4 })),
           fill: true,
           borderColor: warningColour,
           pointRadius: 0,
         },
         {
           label: 'Target',
-          data: rawData.map((d) => ({ x: d[2], y: 10 })),
+          data: glucoseData.map((d) => ({ x: d.timestamp, y: 10 })),
           fill: 1,
           borderColor: inRangeColour,
           pointRadius: 0,
         },
         {
           label: 'High',
-          data: rawData.map((d) => ({ x: d[2], y: maxValue })),
+          data: glucoseData.map((d) => ({ x: d.timestamp, y: maxValue })),
           fill: 2,
           borderColor: warningColour,
           pointRadius: 0,
@@ -174,7 +177,7 @@ export default {
           hoverOffset: 4,
           data: d.data,
         })),
-        labels: rawData.map((d) => moment(d[2]).format(DATETIME_FORMAT)),
+        labels: glucoseData.map((d) => moment(d.timestamp).format(DATETIME_FORMAT)),
       }
       this.lineChartOptions = {
         ...this.lineChartOptions,

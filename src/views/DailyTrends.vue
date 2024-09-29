@@ -10,7 +10,7 @@
       <v-col cols="2" style="min-width: 350px; min-height: 200px">
         <v-sheet class="pa-2 ma-2">
           <v-date-input
-            v-model="model"
+            v-model="dateRange"
             @update:model-value="handleRange"
             label="Select range"
             multiple="range"
